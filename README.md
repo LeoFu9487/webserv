@@ -18,6 +18,8 @@ https://www.freecodecamp.org/news/everything-you-need-to-know-about-cookies-for-
 
 https://www.valentinog.com/blog/cookies/
 
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cookie
+
 unread :
 
 https://www.notion.so/etelcode/Documentation-Webserv-320727979ffd4176a7dd5ba41aaadf46 - french
