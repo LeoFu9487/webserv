@@ -64,6 +64,28 @@ class FailToListen : public std::exception
 };
 
 /*
+Connection
+*/
+
+class FailToCreateEpoll : public std::exception
+{
+	public:
+		char const	*what() const throw()
+		{
+			return "Fail To Create Epoll";
+		}
+};
+
+class FailToControlEpoll : public std::exception
+{
+	public:
+		char const	*what() const throw()
+		{
+			return "Fail To Control Epoll";
+		}
+};
+
+/*
 HTTP
 */
 

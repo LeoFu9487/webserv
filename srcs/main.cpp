@@ -18,7 +18,8 @@ int main(int ac, char **av)
 			serverlist.push_back(ServerInfo());
 		#endif
 		create_listening_sockets(fd_of_servers, serverlist);
-		connect_with_clients(fd_of_servers);
+		start_server(fd_of_servers);
+		close_sockets(fd_of_servers);
 	}
 	catch(const std::exception& e)
 	{

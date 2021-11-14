@@ -14,15 +14,15 @@ SOCK_FILE = create_listening_sockets.cpp
 
 LINX_PATH = epoll_linux/
 
-LINX_FILE = connect.cpp
+LINX_FILE = epoll_operation.cpp
 
 MACS_PATH = kqueue_macos/
 
-MACS_FILE = connect.cpp
+MACS_FILE = kqueue_operation.cpp
 
 SRCS_PATH = srcs/
 
-SRCS_FILE = main.cpp	utils.cpp
+SRCS_FILE = main.cpp	utils.cpp	start_server.cpp	close_sockets.cpp
 
 SRCS_FILE += $(addprefix $(CONF_PATH), $(CONF_FILE))
 
