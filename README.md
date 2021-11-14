@@ -7,6 +7,7 @@ function : replace_space_with_underscore
 todo :
 1. default conf if none are provided ?
 2. remove -D TEST flag
+3. is unistd.h forbidden ?
 
 ## reference
 
@@ -17,6 +18,10 @@ https://www.geeksforgeeks.org/socket-programming-cc/
 https://github.com/Jibus22/webserv/wiki/Socket
 
 https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa
+
+epoll :
+
+https://swingseagull.github.io/2016/11/08/epoll-sample/
 
 cgi :
 

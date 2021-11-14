@@ -12,6 +12,14 @@ SOCK_PATH = socket/
 
 SOCK_FILE = create_listening_sockets.cpp
 
+LINX_PATH = epoll_linux/
+
+LINX_FILE = connect.cpp
+
+MACS_PATH = kqueue_macos/
+
+MACS_FILE = connect.cpp
+
 SRCS_PATH = srcs/
 
 SRCS_FILE = main.cpp	utils.cpp
@@ -20,12 +28,16 @@ SRCS_FILE += $(addprefix $(CONF_PATH), $(CONF_FILE))
 
 SRCS_FILE += $(addprefix $(SOCK_PATH), $(SOCK_FILE))
 
+SRCS_FILE += $(addprefix $(LINX_PATH), $(LINX_FILE))
+
+SRCS_FILE += $(addprefix $(MACS_PATH), $(MACS_FILE))
+
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_FILE))
 
 OBJS = $(SRCS:.cpp=.o)
 
 HEADER_FILE = webserv.hpp	ServerInfo.hpp	exception.hpp	utils.hpp	conf.hpp\
-socket.hpp
+socket.hpp	connect.hpp
 
 HEADER_PATH = includes/
 

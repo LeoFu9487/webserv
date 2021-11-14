@@ -7,6 +7,7 @@
 #include <poll.h> // poll
 #include <sys/socket.h> // socket, accept, listen, send, recv, bind, connect, setsockopt, getsockname
 #include <fcntl.h> // fcntl
+#include <unistd.h> // read, write, close
 
 #ifdef __linux__
 	#include <sys/epoll.h> // epoll
@@ -29,3 +30,4 @@
 #include "utils.hpp"
 #include "conf.hpp"
 #include "socket.hpp"
+#include "connect.hpp"
