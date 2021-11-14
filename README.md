@@ -1,5 +1,15 @@
 # webserv
 
+coding style :
+class : CapitalForTheFirstLetterOfEveryWord
+function : replace_space_with_underscore
+
+todo :
+1. default conf if none are provided ?
+2. remove -D TEST flag
+
+## reference
+
 socket programming :
 
 https://www.geeksforgeeks.org/socket-programming-cc/

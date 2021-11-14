@@ -8,7 +8,6 @@
 #include <sys/socket.h> // socket, accept, listen, send, recv, bind, connect, setsockopt, getsockname
 #include <fcntl.h> // fcntl
 
-
 #ifdef __linux__
 	#include <sys/epoll.h> // epoll
 #else
@@ -18,3 +17,15 @@
 // C++ library
 
 #include <iostream>
+#include <cstdlib>
+#include <algorithm>
+#include <vector>
+#include <map>
+
+// *.hpp
+
+#include "ServerInfo.hpp"
+#include "exception.hpp"
+#include "utils.hpp"
+#include "conf.hpp"
+#include "socket.hpp"
