@@ -3,13 +3,14 @@
 class ClientInfo
 {
 	private:
-		std::string _request;
-
+		ServerInfo const	&_server;
+		std::string			_request;
 
 	public:
-		ClientInfo();
+		ClientInfo(ServerInfo const &server);
 
-		void	set_request(char *, ssize_t);
+		void	set_request(std::string const &str);
 
 		std::string const &get_request() const;
+		ServerInfo const &get_server() const;
 };

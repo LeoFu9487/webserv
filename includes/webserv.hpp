@@ -34,4 +34,4 @@
 #include "connect.hpp"
 #include "MACROS.hpp"
 #include "ClientInfo.hpp"
-
+#include "http.hpp"

@@ -2,7 +2,7 @@ NAME = webserv
 
 CXX = clang++
 
-CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -fsanitize=address
+CXXFLAGS = -Wall -Werror -Wextra -std=c++98  -fsanitize=address
 
 CONF_PATH = conf/
 
@@ -20,6 +20,10 @@ MACS_PATH = kqueue_macos/
 
 MACS_FILE = kqueue_operation.cpp
 
+HTTP_PATH = http/
+
+HTTP_FILE = deal_with_request.cpp
+
 SRCS_PATH = srcs/
 
 SRCS_FILE = main.cpp	utils.cpp	start_server.cpp	close_sockets.cpp	ClientInfo.cpp
@@ -32,12 +36,14 @@ SRCS_FILE += $(addprefix $(LINX_PATH), $(LINX_FILE))
 
 SRCS_FILE += $(addprefix $(MACS_PATH), $(MACS_FILE))
 
+SRCS_FILE += $(addprefix $(HTTP_PATH), $(HTTP_FILE))
+
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_FILE))
 
 OBJS = $(SRCS:.cpp=.o)
 
 HEADER_FILE = webserv.hpp	ServerInfo.hpp	exception.hpp	utils.hpp	conf.hpp\
-socket.hpp	connect.hpp	MACROS.hpp	ClientInfo.hpp
+socket.hpp	connect.hpp	MACROS.hpp	ClientInfo.hpp	http.hpp
 
 HEADER_PATH = includes/
 

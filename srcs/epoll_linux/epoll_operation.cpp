@@ -30,31 +30,41 @@ void	delete_client_from_epoll(std::map<int, ClientInfo> &fd_map, int epoll_fd, i
 	fd_map.erase(target_fd);
 }
 
-void	accept_new_client(int epoll_fd, int server_fd, std::map<int, ClientInfo> &fd_of_clients)
+void	accept_new_client(int epoll_fd, int server_fd, std::map<int, ClientInfo> &fd_of_clients, std::map<int, ServerInfo*> &fd_of_servers)
 {
 	struct sockaddr_in	sockaddr;
 	socklen_t	len = sizeof(sockaddr);
-	ClientInfo	new_client;
 
 	int client_fd = accept(server_fd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len);
 	if (client_fd < 0)
 		throw(FailToAccept());
+	make_socket_nonblock(client_fd); // is it correct ?
 	add_read_event_in_epoll(epoll_fd, client_fd);
 	/*
 	todo : need to fill new client information
 	*/
-	fd_of_clients[client_fd] = new_client;
+	fd_of_clients.insert(std::make_pair(client_fd, ClientInfo((*(fd_of_servers[server_fd])))));
 }
 
 int	read_request(std::map<int, ClientInfo>::iterator it)
 {
-	char	buf[RCV_BUFFER_SIZE];
-	ssize_t	len;
+	int	ret = 0;
+	int	len;
+	std::string str;
 
-	len = recv(it->first, buf, RCV_BUFFER_SIZE - 1, 0);
-	if (len > 0)
-		it->second.set_request(buf, len);
-	return len;
+	while (1)
+	{
+		char	buf[RCV_BUFFER_SIZE];
+		len = recv(it->first, buf, RCV_BUFFER_SIZE - 1, 0);
+		if (len <= 0)
+			break ;
+		ret += len;
+		buf[len] = 0;
+		str += buf;
+	}
+	if (ret > 0)
+		it->second.set_request(str);
+	return ret;
 }
 
 #endif
