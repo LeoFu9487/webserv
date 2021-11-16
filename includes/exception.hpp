@@ -85,7 +85,58 @@ class FailToControlEpoll : public std::exception
 		}
 };
 
+class FailToWaitEpoll : public std::exception
+{
+	public:
+		char const	*what() const throw()
+		{
+			return "Fail To Wait Epoll";
+		}
+};
+
+class FailToAccept : public std::exception
+{
+	public:
+		char const	*what() const throw()
+		{
+			return "Fail To accept";
+		}
+};
+
+class ClientNotInMap : public std::exception
+{
+	public:
+		char const	*what() const throw()
+		{
+			return "Client Not In Map";
+		}
+};
+
+
 /*
 HTTP
 */
+
+
+
+/*
+Other
+*/
+class FailToGetFdStatus : public std::exception
+{
+	public:
+		char const	*what() const throw()
+		{
+			return "Fail To Get fd status";
+		}
+};
+
+class FailToSetFdStatus : public std::exception
+{
+	public:
+		char const	*what() const throw()
+		{
+			return "Fail To Set fd status";
+		}
+};
 

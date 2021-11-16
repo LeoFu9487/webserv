@@ -17,6 +17,8 @@ static int	create_one_listening_socket(ServerInfo &info)
 	if (bind(socket_fd, reinterpret_cast<struct sockaddr *>(&sockaddr), sizeof(sockaddr)) == -1)
 		throw(FailToBind());
 
+	make_socket_nonblock(socket_fd); // don't know if this is correct
+
 	if (listen(socket_fd, info.get_max_client()))
 		throw(FailToListen());
 	

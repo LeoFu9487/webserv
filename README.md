@@ -9,7 +9,10 @@ function : replace_space_with_underscore
 todo :
 1. default conf if none are provided ?
 2. remove -D TEST flag
-3. is unistd.h forbidden ?
+3. remember to close all the fds (sockets, epoll ...) 
+4. is F_GETFL forbidden ? (function make_socket_nonblock)
+5. Should I make all the sockets non-block ?
+6. Should I erase old request every time I get a new one?
 
 ## reference
 
@@ -24,6 +27,8 @@ https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-buil
 epoll :
 
 https://swingseagull.github.io/2016/11/08/epoll-sample/
+https://www.cnblogs.com/fnlingnzb-learner/p/5835573.html
+https://www.jianshu.com/p/ee381d365a29
 
 cgi :
 

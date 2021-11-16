@@ -32,3 +32,6 @@
 #include "conf.hpp"
 #include "socket.hpp"
 #include "connect.hpp"
+#include "MACROS.hpp"
+#include "ClientInfo.hpp"
+

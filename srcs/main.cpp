@@ -19,7 +19,7 @@ int main(int ac, char **av)
 		#endif
 		create_listening_sockets(fd_of_servers, serverlist);
 		start_server(fd_of_servers);
-		close_sockets(fd_of_servers);
+		// close_sockets(fd_of_servers); also close clients ?
 	}
 	catch(const std::exception& e)
 	{
