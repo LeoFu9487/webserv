@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:26 by xli               #+#    #+#             */
-/*   Updated: 2021/11/16 17:20:44 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/17 09:22:49 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ class ServerInfo
 {
 	private:
 		int			_port;
-		std::string	_server_names;
+		std::string	_IP;
 		std::string	_error_pages;
-		int			_maxClient;
+		int			_max_client;
 
 	public:
 		void	print() const;
@@ -30,12 +30,13 @@ class ServerInfo
 		ServerInfo operator=(const ServerInfo &copy);
 		~ServerInfo();
 
-		int					getPort() const;
-		std::string const	&getErrorPage() const;
+		int					get_ort() const;
+		std::string const	&get_IP() const;
+		std::string const	&get_error_page() const;
 		int					getMaxClient() const;
-		void				setPort();
-		void				setErrorPage();
-		void				setMaxClient();
+		void				set_port();
+		void				set_error_page();
+		void				set_max_client();
 };
 
 /*

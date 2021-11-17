@@ -6,17 +6,17 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/16 17:17:49 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/17 09:21:05 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ServerInfo.hpp"
 
-ServerInfo::ServerInfo() : _port(0), _maxClient(0) {}
+ServerInfo::ServerInfo() : _port(0), _max_client(0) {}
 ServerInfo::ServerInfo(const ServerInfo &copy)
 :	_port(copy._port),
-	_errorPage(copy._errorPage),
-	_maxClient(copy._maxClient) {}
+	_error_page(copy._error_page),
+	_max_client(copy._max_client) {}
 ServerInfo &ServerInfo::operator=(const ServerInfo &copy)
 {
 	ServerInfo	tmp(copy);
@@ -25,19 +25,19 @@ ServerInfo &ServerInfo::operator=(const ServerInfo &copy)
 }
 ServerInfo::~ServerInfo() {}
 
-int	ServerInfo::getPort() const
+int	ServerInfo::get_port() const
 {
 	return _port;
 }
 
-std::string const	&ServerInfo::getErrorPage() const
+std::string const	&ServerInfo::get_error_page() const
 {
-	return _errorPage;
+	return _error_page;
 }
 
 int	ServerInfo::getMaxClient() const
 {
-	return _maxClient;
+	return _max_client;
 }
 
 #ifdef TEST
