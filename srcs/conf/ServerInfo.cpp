@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/17 11:10:47 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/17 13:07:08 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int const ServerInfo::get_max_client() const { return _max_client; }
 
 void ServerInfo::set_port(const char *p)
 {
-	
+
 	_port = atoi(p);
 }
 
