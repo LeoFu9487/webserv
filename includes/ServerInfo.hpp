@@ -1,20 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ServerInfo.hpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/16 17:01:26 by xli               #+#    #+#             */
+/*   Updated: 2021/11/16 17:20:44 by xli              ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #pragma once
 #include "webserv.hpp"
+#include <iostream>
 
 class ServerInfo
 {
 	private:
 		int			_port;
-		std::string	_IP;
-		int			_max_client;
+		std::string	_server_names;
+		std::string	_error_pages;
+		int			_maxClient;
 
 	public:
 		void	print() const;
-		ServerInfo();
 
-		int					get_port() const;
-		std::string const	&get_IP() const;
-		int					get_max_client() const;
+		ServerInfo();
+		ServerInfo(const ServerInfo &copy);
+		ServerInfo operator=(const ServerInfo &copy);
+		~ServerInfo();
+
+		int					getPort() const;
+		std::string const	&getErrorPage() const;
+		int					getMaxClient() const;
+		void				setPort();
+		void				setErrorPage();
+		void				setMaxClient();
 };
 
 /*
