@@ -14,6 +14,15 @@ class InvalidConfFilePath : public std::exception
 		}
 };
 
+class InvalidConfFile : public std::exception
+{
+	public:
+		char const	*what() const throw()
+		{
+			return "Invalid Configuration File";
+		}
+};
+
 class ConfFileParseError : public std::exception
 {
 	public:
