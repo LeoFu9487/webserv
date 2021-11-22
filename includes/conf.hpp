@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:31 by xli               #+#    #+#             */
-/*   Updated: 2021/11/19 15:10:45 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/22 13:49:14 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,13 @@ enum e_server
 {
 	PORT,
 	NAME,
-	ROOT,
+	IP,
 	ERROR,
-	SIZE
+	SIZE,
 };
 
-bool valid_bracket(std::string str);
-int nb_lines(std::string str);
+bool		valid_bracket(std::string str);
+int			nb_lines(std::string str);
 std::string get_line(std::string str, int n);
-void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path);
+int			nb_tokens(const char *);
+void		parse_servers(std::vector<ServerInfo> &result, char *conf_file_path);

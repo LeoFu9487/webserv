@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:26 by xli               #+#    #+#             */
-/*   Updated: 2021/11/19 09:55:42 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/22 13:48:09 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,20 @@
 class ServerInfo
 {
 	private:
+		/*
+		** Server attributes
+		*/
 		int							_port;
-		std::vector<std::string>	_server_names;
-		std::string					_root;
+		std::string					_server_name;
 		std::string					_IP;
 		std::string					_error_pages;
 		int							_max_client;
+
+		/*
+		** Location attributes
+		*/
+		std::vector<std::string>	_allow_method;
+		std::string					_root;
 
 	public:
 		void	print() const;
@@ -34,23 +42,41 @@ class ServerInfo
 		ServerInfo &operator=(const ServerInfo &copy);
 		~ServerInfo();
 
+		/*
+		** Server getters
+		*/
 		int							get_port() const;
-		std::vector<std::string>	get_names() const;
-		std::string					get_root() const;
+		std::string					get_name() const;
 		std::string					get_IP() const;
 		std::string					get_error() const;
 		int							get_max_client() const;
 
+		/*
+		** Location getters
+		*/
+		std::vector<std::string>	get_allow_method() const;
+		std::string					get_root() const;
+
 		void						set_server(int index, const int &pos, const std::string &str);
+
+	private:
+		/*
+		** Server setters
+		*/
 		void						set_port(const char *);
-		// void						set_names(const char *);
-		// void						set_root(const char *);
-		// void						set_IP(const char *);
-		// void						set_error(const char *);
-		// void						set_max_client(const char *);
+		void						set_name(const char *);
+		void						set_IP(const char *);
+		void						set_error(const char *);
+		void						set_max_client(const char *);
+
+		/*
+		** Location setters
+		*/
+
+		void						set_allow_method(const char *);
+		void						set_root(const char *);
 };
 
-typedef void (ServerInfo::*func)(const char *);
 
 /*
 Fill the attributes that can be indicated in conf file

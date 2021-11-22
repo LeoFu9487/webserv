@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/19 15:27:56 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/22 14:14:39 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 	file.close();
 	//std::cout << str << std::endl;
 	if (valid_bracket(str) == false)
-		throw(ConfFileParseError());
+		throw(ConfFileParseError("Invalid numbers bracket"));
 
 	if (!str.compare(0, 8, "server {"))
 	{
@@ -49,18 +49,15 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 			//std::cout << "IN2";
 			line = get_line(str, ct);
 			if (!line.compare(0, 7, "listen "))
-			{
-				//std::cout << "IN3";
 				new_server.set_server(PORT, 7, line);
-			}
-			// else if (!line.compare(0, 11, "server_name "))
-			// 	new_server.set_server(NAME, 11, line);
-			// else if (!line.compare(0, 5, "oot "))
-			// 	new_server.set_server(ROOT, 5, line);
-			// else if (!line.compare(0, 11, "error_page "))
-			// 	new_server.set_server(ERROR, 11, line);
-			// else if (!line.compare(0, 9, "max_size "))
-			// 	new_server.set_server(SIZE, 9, line);
+			else if (!line.compare(0, 12, "server_name "))
+				new_server.set_server(NAME, 12, line);
+			else if (!line.compare(0, 3, "IP "))
+				new_server.set_server(IP, 3, line);
+			else if (!line.compare(0, 11, "error_page "))
+				new_server.set_server(ERROR, 11, line);
+			else if (!line.compare(0, 9, "max_size "))
+				new_server.set_server(SIZE, 9, line);
 			// else
 			// 	throw(ConfFileParseError());
 			ct++;
@@ -148,4 +145,25 @@ std::string get_line(std::string str, int n)
 	while (j > 0 && std::isspace(str[i + j - 1]))
 		--j;
 	return (std::string(str, i, j));
+}
+
+/*
+** Get numbers of tokens of string
+*/
+
+int nb_tokens(const char *str)
+{
+	int ct = 0;
+	int res = 0;
+	while (str[ct] != '\0')
+	{
+		while (isspace(str[ct]))
+			ct++;
+		int tmp = ct;
+		while (isalnum(str[ct]) || ispunct(str[ct]))
+			ct++;
+		if (tmp != ct)
+			res++;
+	}
+	return res;
 }

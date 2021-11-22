@@ -25,10 +25,19 @@ class InvalidConfFile : public std::exception
 
 class ConfFileParseError : public std::exception
 {
+	private:
+		std::string	_msg;
+
 	public:
+		ConfFileParseError(std::string msg)
+		:	_msg(msg) {}
+
+		~ConfFileParseError() throw() {};
+
 		char const	*what() const throw()
 		{
-			return "Configuration File Parse Error";
+			std::cout << "Configuration File Parse Error";
+			return _msg.c_str();
 		}
 };
 
