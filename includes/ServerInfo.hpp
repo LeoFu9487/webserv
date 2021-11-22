@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:26 by xli               #+#    #+#             */
-/*   Updated: 2021/11/22 13:48:09 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/22 17:28:06 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <sstream>
 
 class ServerInfo
 {
@@ -31,6 +32,7 @@ class ServerInfo
 		/*
 		** Location attributes
 		*/
+		std::string					_index;
 		std::vector<std::string>	_allow_method;
 		std::string					_root;
 
@@ -54,10 +56,12 @@ class ServerInfo
 		/*
 		** Location getters
 		*/
+		std::string					get_index() const;
 		std::vector<std::string>	get_allow_method() const;
 		std::string					get_root() const;
 
 		void						set_server(int index, const int &pos, const std::string &str);
+		void						set_location(int index, const int &pos, const std::string &str);
 
 	private:
 		/*
@@ -72,7 +76,7 @@ class ServerInfo
 		/*
 		** Location setters
 		*/
-
+		void						set_index(const char *);
 		void						set_allow_method(const char *);
 		void						set_root(const char *);
 };

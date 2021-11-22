@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:31 by xli               #+#    #+#             */
-/*   Updated: 2021/11/22 13:49:14 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/22 16:21:16 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,16 @@ enum e_server
 	SIZE,
 };
 
+enum e_location
+{
+	INDEX,
+	ROOT,
+	METHOD
+};
+
 bool		valid_bracket(std::string str);
 int			nb_lines(std::string str);
 std::string get_line(std::string str, int n);
 int			nb_tokens(const char *);
+void		new_location(std::string &str, int &ct);
 void		parse_servers(std::vector<ServerInfo> &result, char *conf_file_path);

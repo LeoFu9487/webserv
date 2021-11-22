@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/22 14:14:39 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/22 17:16:55 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,22 +22,18 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 	(void)result;
 	if (!conf_file_path)
 		throw(InvalidConfFilePath());
-
 	std::ifstream	file;
 	file.open(conf_file_path);
 	if (!file)
 		throw(InvalidConfFile());
-
 	char	c;
 	std::string	str;
 	while (file.get(c))
 		str.push_back(c);
-
 	file.close();
 	//std::cout << str << std::endl;
 	if (valid_bracket(str) == false)
 		throw(ConfFileParseError("Invalid numbers bracket"));
-
 	if (!str.compare(0, 8, "server {"))
 	{
 		//std::cout << "IN1";
@@ -58,12 +54,40 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 				new_server.set_server(ERROR, 11, line);
 			else if (!line.compare(0, 9, "max_size "))
 				new_server.set_server(SIZE, 9, line);
+			else if (!line.compare(0, 9, "location "))
+			{
+				if (nb_tokens(line.c_str()) != 3)
+					throw(ConfFileParseError("Invalid location header"));
+				new_location(str, ct);
+			}
 			// else
 			// 	throw(ConfFileParseError());
 			ct++;
 		}
 	}
+	else
+		throw(ConfFileParseError("Invalid server header"));
+}
 
+/*
+** Parsing and filling location info
+*/
+
+void new_location(std::string &str, int &ct)
+{
+	ServerInfo	new_location;
+	std::string	line;
+	while (ct < nb_lines(str))
+	{
+		line = get_line(str, ct);
+		if (!line.compare(0, 6, "index "))
+			new_location.set_location(INDEX, 6, line);
+		else if (!line.compare(0, 5, "root "))
+			new_location.set_location(ROOT, 5, line);
+		else if (!line.compare(0, 13, "allow_method "))
+			new_location.set_location(METHOD, 13, line);
+		ct++;
+	}
 }
 
 /*
