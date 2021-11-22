@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:31 by xli               #+#    #+#             */
-/*   Updated: 2021/11/22 16:21:16 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/22 18:41:51 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ enum e_server
 
 enum e_location
 {
+	AUTOINDEX,
 	INDEX,
 	ROOT,
 	METHOD

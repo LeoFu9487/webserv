@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/22 17:16:55 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/22 18:46:13 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,9 @@ void new_location(std::string &str, int &ct)
 	while (ct < nb_lines(str))
 	{
 		line = get_line(str, ct);
-		if (!line.compare(0, 6, "index "))
+		if (!line.compare(0, 10, "autoindex "))
+			new_location.set_location(AUTOINDEX, 10, line);
+		else if (!line.compare(0, 6, "index "))
 			new_location.set_location(INDEX, 6, line);
 		else if (!line.compare(0, 5, "root "))
 			new_location.set_location(ROOT, 5, line);

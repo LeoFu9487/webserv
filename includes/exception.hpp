@@ -36,7 +36,7 @@ class ConfFileParseError : public std::exception
 
 		char const	*what() const throw()
 		{
-			std::cout << "Configuration File Parse Error";
+			std::cerr << "Configuration File Parse Error" << std::endl;
 			return _msg.c_str();
 		}
 };

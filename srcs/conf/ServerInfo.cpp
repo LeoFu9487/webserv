@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/22 17:43:26 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/22 18:54:47 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,10 @@ ServerInfo::ServerInfo(const ServerInfo &copy)
 	_IP(copy._IP),
 	_error_pages(copy._error_pages),
 	_max_client(copy._max_client),
-	_allow_method(copy._allow_method),
-	_root(copy._root) {}
+	_autoindex(copy._autoindex),
+	_index(copy._index),
+	_root(copy._root),
+	_allow_method(copy._allow_method) {}
 
 ServerInfo &ServerInfo::operator=(const ServerInfo &copy)
 {
@@ -123,6 +125,8 @@ void ServerInfo::set_max_client(const char *s)
 ** --------------- Getter ---------------
 */
 
+bool ServerInfo::get_autoindex() const { return _autoindex; }
+
 std::string ServerInfo::get_index() const { return _index; }
 
 std::vector<std::string> ServerInfo::get_allow_method() const { return _allow_method; }
@@ -136,8 +140,8 @@ std::string ServerInfo::get_root() const { return _root; }
 void ServerInfo::set_location(int index, const int &pos, const std::string &str)
 {
 	typedef void (ServerInfo::*location_funcs)(const char *);
-	location_funcs	funcs[] = {&ServerInfo::set_index, &ServerInfo::set_root,
-		&ServerInfo::set_allow_method};
+	location_funcs	funcs[] = {&ServerInfo::set_autoindex, &ServerInfo::set_index,
+		&ServerInfo::set_root, &ServerInfo::set_allow_method};
 
 	//tmp = str[pos]?
 	// std::cout << "str = " << str << std::endl;
@@ -148,6 +152,19 @@ void ServerInfo::set_location(int index, const int &pos, const std::string &str)
 		i++;
 	//eg. for listen 8080, tmp + i = 8080
 	(this->*funcs[index])(tmp + i);
+}
+
+void ServerInfo::set_autoindex(const char *a)
+{
+	std::string tmp = a;
+	tmp.erase(std::remove_if(tmp.begin(), tmp.end(), isspace), tmp.end());
+	if (tmp.compare("on") && tmp.compare("off"))
+		throw(ConfFileParseError("put only on or off for autoindex"));
+	else if (!tmp.compare("on"))
+		_autoindex = 1;
+	else
+		_autoindex = 0;
+	// std::cout << "_autoindex = " << _autoindex << std::endl;
 }
 
 void ServerInfo::set_index(const char *i)

@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:26 by xli               #+#    #+#             */
-/*   Updated: 2021/11/22 17:28:06 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/22 18:51:10 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,10 @@ class ServerInfo
 		/*
 		** Location attributes
 		*/
+		bool						_autoindex;
 		std::string					_index;
-		std::vector<std::string>	_allow_method;
 		std::string					_root;
+		std::vector<std::string>	_allow_method;
 
 	public:
 		void	print() const;
@@ -56,6 +57,7 @@ class ServerInfo
 		/*
 		** Location getters
 		*/
+		bool						get_autoindex() const;
 		std::string					get_index() const;
 		std::vector<std::string>	get_allow_method() const;
 		std::string					get_root() const;
@@ -76,6 +78,7 @@ class ServerInfo
 		/*
 		** Location setters
 		*/
+		void						set_autoindex(const char *);
 		void						set_index(const char *);
 		void						set_allow_method(const char *);
 		void						set_root(const char *);
