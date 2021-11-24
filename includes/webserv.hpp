@@ -35,3 +35,5 @@
 #include "MACROS.hpp"
 #include "ClientInfo.hpp"
 #include "http.hpp"
+#include "HTTPRequest.hpp"
+#include "HTTPResponse.hpp"
