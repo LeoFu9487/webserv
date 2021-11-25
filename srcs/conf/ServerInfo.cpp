@@ -1,25 +1,259 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ServerInfo.cpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
+/*   Updated: 2021/11/25 11:29:14 by xli              ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/ServerInfo.hpp"
 
-int	ServerInfo::get_port() const
+/*
+** =============== LOCATION ===============
+*/
+
+Location::Location(int p)
+:	_port(p),
+	_autoindex(0)
 {
-	return _port;
+	const char *method_list[] = { "POST", "GET", "HEAD", "DELETE"};
+	_allow_method.insert(_allow_method.begin(), method_list, method_list + 4);
 }
 
-std::string const	&ServerInfo::get_IP() const
+Location::Location(const Location &copy)
+:	_port(copy._port),
+	_autoindex(copy._autoindex),
+	_index(copy._index),
+	_root(copy._root),
+	_allow_method(copy._allow_method) {}
+
+Location &Location::operator=(const Location &copy)
 {
-	return _IP;
+	Location	tmp(copy);
+	std::swap(tmp, *this);
+	return (*this);
+}
+Location::~Location() {}
+
+/*
+** --------------- Getter ---------------
+*/
+
+int const &Location::get_port() const { return _port; }
+
+bool const &Location::get_autoindex() const { return _autoindex; }
+
+std::string const &Location::get_index() const { return _index; }
+
+std::vector<std::string> const &Location::get_allow_method() const { return _allow_method; }
+
+std::string const &Location::get_root() const { return _root; }
+
+/*
+** --------------- SETTER ---------------
+*/
+
+void Location::set_location(int index, const int &pos, const std::string &str)
+{
+	typedef void (Location::*location_funcs)(const char *);
+	location_funcs	funcs[] = {&Location::set_autoindex, &Location::set_index,
+		&Location::set_root, &Location::set_allow_method};
+
+	//tmp = str[pos]?
+	// std::cout << "str = " << str << std::endl;
+	const char *tmp = str.c_str() + pos;
+	// std::cout << "tmp = " << tmp << std::endl;
+	int i = 0;
+	while (isspace(tmp[i]))
+		i++;
+	//eg. for listen 8080, tmp + i = 8080
+	(this->*funcs[index])(tmp + i);
 }
 
-int	ServerInfo::get_max_client() const
+void Location::set_autoindex(const char *a)
 {
-	return _max_client;
+	std::string tmp = a;
+	tmp.erase(std::remove_if(tmp.begin(), tmp.end(), isspace), tmp.end());
+	if (tmp.compare("on") && tmp.compare("off"))
+		throw(ConfFileParseError("put only on or off for autoindex"));
+	else if (!tmp.compare("on"))
+		_autoindex = 1;
+	else
+		_autoindex = 0;
 }
 
-#ifdef TEST
+void Location::set_index(const char *i)
+{
+	if (nb_tokens(i) != 1)
+		throw(ConfFileParseError("put only one index"));
+	std::string tmp = i;
+	tmp.erase(std::remove_if(tmp.begin(), tmp.end(), isspace), tmp.end());
+	_index = tmp;
+}
+
+void Location::set_root(const char *r)
+{
+	if (nb_tokens(r) != 1)
+		throw(ConfFileParseError("put only one root"));
+	std::string	tmp = r;
+	tmp.erase(std::remove_if(tmp.begin(), tmp.end(), isspace), tmp.end());
+	_root = tmp;
+}
+
+void Location::set_allow_method(const char *m)
+{
+	std::stringstream	str(m);
+	std::istream_iterator<std::string>	begin(str);
+	std::istream_iterator<std::string>	end;
+	std::vector<std::string>	_allow_method(begin, end);
+	const char *method_check[] = { "POST", "GET", "HEAD", "DELETE"};
+	for (size_t i = 0; i < _allow_method.size(); i++)
+	{
+		for (size_t j = 0; j < 4; j++)
+		{
+			if (!strcmp(method_check[j], _allow_method[i].c_str()))
+				break;
+			if (j == 3)
+				throw(ConfFileParseError("Put only allowed methods"));
+		}
+	}
+}
+
+void Location::print() const
+{
+	std::cerr << "----------Location attributes----------" << std::endl;
+	std::cerr << "_port = " << _port << std::endl;
+	std::cerr << "_autoindex = " << _autoindex << std::endl;
+	std::cerr << "_index = " << _index << std::endl;
+	std::cerr << "_root = " << _root << std::endl;
+	for (std::vector<std::string>::const_iterator it = _allow_method.begin(); it != _allow_method.end(); ++it)
+		std::cerr << "_allow_method = " << *it << std::endl;
+}
+
+/*
+** =============== SERVERINFO ===============
+*/
+
 ServerInfo::ServerInfo()
+:	_port(0),
+	_IP("0.0.0.0"),
+	_client_body_size(0) {}
+
+ServerInfo::ServerInfo(const ServerInfo &copy)
+:	_port(copy._port),
+	_server_name(copy._server_name),
+	_IP(copy._IP),
+	_error_pages(copy._error_pages),
+	_client_body_size(copy._client_body_size) {}
+
+ServerInfo &ServerInfo::operator=(const ServerInfo &copy)
 {
-	_port = 8080;
-	_IP = "0.0.0.0";
-	_max_client = 100;
+	ServerInfo	tmp(copy);
+	std::swap(tmp, *this);
+	return (*this);
 }
-#endif
+
+ServerInfo::~ServerInfo() {}
+
+/*
+** --------------- Getter ---------------
+*/
+
+int const &ServerInfo::get_port() const { return _port; }
+
+std::string const &ServerInfo::get_name() const { return _server_name; }
+
+std::string const &ServerInfo::get_IP() const { return _IP; }
+
+std::string const &ServerInfo::get_error() const { return _error_pages; }
+
+int const &ServerInfo::get_client_body_size() const { return _client_body_size; }
+
+std::vector<Location> const *ServerInfo::get_location() const { return &_location; }
+
+/*
+** --------------- SETTER ---------------
+*/
+
+void ServerInfo::set_server(int index, const int &pos, const std::string &str)
+{
+	typedef void (ServerInfo::*server_func)(const char *);
+	server_func	funcs[] = {&ServerInfo::set_port, &ServerInfo::set_name,
+		&ServerInfo::set_error, &ServerInfo::set_client_body_size};
+
+	//tmp = str[pos]?
+	// std::cout << "str = " << str << std::endl;
+	const char *tmp = str.c_str() + pos;
+	// std::cout << "tmp = " << tmp << std::endl;
+	int i = 0;
+	while (isspace(tmp[i]))
+		i++;
+	//eg. for listen 8080, tmp + i = 8080
+	(this->*funcs[index])(tmp + i);
+}
+
+void ServerInfo::set_port(const char *p)
+{
+	if (nb_tokens(p) != 1)
+		throw(ConfFileParseError("put only one port to listen"));
+	std::string	tmp = p;
+	tmp.erase(std::remove_if(tmp.begin(), tmp.end(), isspace), tmp.end());
+	for (size_t i = 0; i < tmp.size(); i++)
+		if (tmp[i] < 48 || tmp[i] > 57)
+			throw(ConfFileParseError("put only digits for port"));
+	_port = atoi(p);
+}
+
+//server_name one or multiple(from string to vector?)
+void ServerInfo::set_name(const char *n)
+{
+	if (nb_tokens(n) != 1)
+		throw(ConfFileParseError("put only one server name"));
+	std::string tmp = n;
+	tmp.erase(std::remove_if(tmp.begin(), tmp.end(), isspace), tmp.end());
+	_server_name = tmp;
+}
+
+void ServerInfo::set_error(const char *e)
+{
+	if (nb_tokens(e) != 1)
+		throw(ConfFileParseError("put only one error path"));
+	_error_pages = e;
+}
+
+//max_size accept 10m or just 10?
+void ServerInfo::set_client_body_size(const char *s)
+{
+	if (nb_tokens(s) != 1)
+		throw(ConfFileParseError("put only one max client body size"));
+	std::string	tmp = s;
+	tmp.erase(std::remove_if(tmp.begin(), tmp.end(), isspace), tmp.end());
+	for (size_t i = 0; i < tmp.size(); i++)
+		if (tmp[i] < 48 || tmp[i] > 57)
+			throw(ConfFileParseError("put only digits for max client body size"));
+	_port = atoi(s);
+}
+
+std::vector<Location> *ServerInfo::set_server_location() { return &_location; }
+
+void ServerInfo::print() const
+{
+	std::cerr << "----------ServerInfo attributes----------" << std::endl;
+	std::cerr << "_port = " << _port << std::endl;
+	std::cerr << "_server_name = " << _server_name << std::endl;
+	std::cerr << "_error_pages = " << _error_pages << std::endl;
+	std::cerr << "_client_body_size = " << _client_body_size << std::endl;
+}
+
+// #ifdef TEST
+// ServerInfo::ServerInfo()
+// {
+// 	_port = 8080;
+// 	_host = "0.0.0.0";
+// 	_max_client = 100;
+// }
+// #endif

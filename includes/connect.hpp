@@ -13,6 +13,6 @@ void	accept_new_client(int epoll_fd, int server_fd, std::map<int, ClientInfo> &f
 int	read_request(std::map<int, ClientInfo>::iterator it);
 int	create_epoll(std::map<int, ServerInfo *> &fd_of_servers);
 
-#elif
+//#elif
 
 #endif
