@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/22 18:46:13 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/25 10:47:20 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 		//std::cout << "IN1";
 		ServerInfo	new_server;
 		std::string	line;
+		line = get_line(str, 0);
+		if (nb_tokens(line.c_str()) != 2)
+			throw(ConfFileParseError("Invalid server header"));
 		int	ct = 1;
 		while (ct < nb_lines(str))
 		{
@@ -48,8 +51,6 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 				new_server.set_server(PORT, 7, line);
 			else if (!line.compare(0, 12, "server_name "))
 				new_server.set_server(NAME, 12, line);
-			else if (!line.compare(0, 3, "IP "))
-				new_server.set_server(IP, 3, line);
 			else if (!line.compare(0, 11, "error_page "))
 				new_server.set_server(ERROR, 11, line);
 			else if (!line.compare(0, 9, "max_size "))
@@ -58,36 +59,34 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 			{
 				if (nb_tokens(line.c_str()) != 3)
 					throw(ConfFileParseError("Invalid location header"));
-				new_location(str, ct);
+				new_location(new_server, str, ct);
 			}
 			// else
 			// 	throw(ConfFileParseError());
 			ct++;
 		}
 	}
-	else
-		throw(ConfFileParseError("Invalid server header"));
 }
 
 /*
 ** Parsing and filling location info
 */
 
-void new_location(std::string &str, int &ct)
+void new_location(ServerInfo &n_server, std::string &str, int &ct)
 {
-	ServerInfo	new_location;
+	Location	n_location(n_server.get_port());
 	std::string	line;
 	while (ct < nb_lines(str))
 	{
 		line = get_line(str, ct);
 		if (!line.compare(0, 10, "autoindex "))
-			new_location.set_location(AUTOINDEX, 10, line);
+			n_location.set_location(AUTOINDEX, 10, line);
 		else if (!line.compare(0, 6, "index "))
-			new_location.set_location(INDEX, 6, line);
+			n_location.set_location(INDEX, 6, line);
 		else if (!line.compare(0, 5, "root "))
-			new_location.set_location(ROOT, 5, line);
+			n_location.set_location(ROOT, 5, line);
 		else if (!line.compare(0, 13, "allow_method "))
-			new_location.set_location(METHOD, 13, line);
+			n_location.set_location(METHOD, 13, line);
 		ct++;
 	}
 }
