@@ -19,7 +19,7 @@ static int	create_one_listening_socket(ServerInfo &info)
 
 	make_socket_nonblock(socket_fd); // don't know if this is correct
 
-	if (listen(socket_fd, info.get_max_client()))
+	if (listen(socket_fd, MAX_CLIENT))
 		throw(FailToListen());
 	
 	return socket_fd;

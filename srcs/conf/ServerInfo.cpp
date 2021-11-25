@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerInfo.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
+/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/25 11:29:14 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/25 22:35:49 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,17 @@ void Location::set_root(const char *r)
 void Location::set_allow_method(const char *m)
 {
 	std::stringstream	str(m);
+	#ifndef __linux__
 	std::istream_iterator<std::string>	begin(str);
 	std::istream_iterator<std::string>	end;
 	std::vector<std::string>	_allow_method(begin, end);
+	#else
+	std::string	token;
+	while (str >> token)
+	{
+		_allow_method.push_back(token);
+	}
+	#endif
 	const char *method_check[] = { "POST", "GET", "HEAD", "DELETE"};
 	for (size_t i = 0; i < _allow_method.size(); i++)
 	{
