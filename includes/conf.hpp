@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:31 by xli               #+#    #+#             */
-/*   Updated: 2021/11/25 16:17:18 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 15:42:27 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ enum e_server
 
 enum e_location
 {
+	URI,
 	AUTOINDEX,
 	INDEX,
 	ROOT,
@@ -39,5 +40,6 @@ bool		valid_bracket(std::string str);
 int			nb_lines(std::string str);
 std::string get_line(std::string str, int n);
 int			nb_tokens(const char *);
+bool		to_skip(std::string str, int ct);
 void		new_location(ServerInfo &n_server, std::string &str, int &ct);
 void		parse_servers(std::vector<ServerInfo> &result, char *conf_file_path);

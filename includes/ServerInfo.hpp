@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:26 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 08:54:00 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 15:44:07 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class Location
 		*/
 		int									_port;
 		bool								_autoindex;
+		std::string							_uri;
 		std::string							_index;
 		std::string							_root;
 		std::vector<std::string>			_allow_method;
@@ -41,6 +42,7 @@ class Location
 		** Location getters
 		*/
 		int									const &get_port() const;
+		std::string							const &get_uri() const;
 		bool								const &get_autoindex() const;
 		std::string							const &get_index() const;
 		std::vector<std::string>			const &get_allow_method() const;
@@ -56,6 +58,7 @@ class Location
 		/*
 		** Location setters
 		*/
+		void	set_uri(const char *);
 		void	set_autoindex(const char *);
 		void	set_index(const char *);
 		void	set_allow_method(const char *);

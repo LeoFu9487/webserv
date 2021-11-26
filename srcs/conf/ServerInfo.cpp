@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 09:06:49 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 15:57:53 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,9 @@ std::map<std::string, std::string> const &Location::get_cgi() const { return _cg
 void Location::set_location(int index, const int &pos, const std::string &str)
 {
 	typedef void (Location::*location_funcs)(const char *);
-	location_funcs	funcs[] = {&Location::set_autoindex, &Location::set_index,
-		&Location::set_root, &Location::set_allow_method, &Location::set_upload_path,
-		&Location::set_cgi};
+	location_funcs	funcs[] = {&Location::set_uri, &Location::set_autoindex,
+		&Location::set_index, &Location::set_root, &Location::set_allow_method,
+		&Location::set_upload_path, &Location::set_cgi};
 
 	//tmp = str[pos]?
 	// std::cout << "str = " << str << std::endl;
@@ -77,6 +77,13 @@ void Location::set_location(int index, const int &pos, const std::string &str)
 		i++;
 	//eg. for listen 8080, tmp + i = 8080
 	(this->*funcs[index])(tmp + i);
+}
+
+void Location::set_uri(const char *u)
+{
+	std::string	tmp = u;
+	tmp.erase(std::remove_if(tmp.begin(), tmp.end(), isspace), tmp.end());
+	_uri = tmp;
 }
 
 void Location::set_autoindex(const char *a)
@@ -131,11 +138,11 @@ void Location::set_allow_method(const char *m)
 			if (!strcmp(method_check[j], _allow_method[i].c_str()))
 				break;
 			if (j == 3)
-				throw(ConfFileParseError("Put only allowed methods"));
+				throw(ConfFileParseError("put only allowed methods"));
 		}
 	}
-	for (std::vector<std::string>::const_iterator it = _allow_method.begin(); it != _allow_method.end(); ++it)
-		std::cerr << "_allow_method = " << *it << std::endl;
+	// for (std::vector<std::string>::const_iterator it = _allow_method.begin(); it != _allow_method.end(); ++it)
+	// 	std::cerr << "_allow_method = " << *it << std::endl;
 }
 
 void Location::set_upload_path(const char *u)
@@ -153,8 +160,8 @@ void Location::set_cgi(const char *c)
 	std::istream_iterator<std::string>	begin(str);
 	std::istream_iterator<std::string>	end;
 	std::vector<std::string>	tmp(begin, end);
-	for (std::vector<std::string>::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
-		std::cout << "tmp = " << *it << std::endl;
+	// for (std::vector<std::string>::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
+	// 	std::cout << "tmp = " << *it << std::endl;
 	if (tmp.size() != 2)
 		throw(ConfFileParseError("wrong input for cgi"));
 	_cgi.insert(std::pair<std::string, std::string>(tmp[0], tmp[1]));
@@ -165,6 +172,7 @@ void Location::set_cgi(const char *c)
 void Location::print() const
 {
 	std::cerr << "----------Location attributes----------" << std::endl;
+	std::cerr << "_uri = " << _uri << std::endl;
 	std::cerr << "_port = " << _port << std::endl;
 	std::cerr << "_autoindex = " << _autoindex << std::endl;
 	std::cerr << "_index = " << _index << std::endl;

@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/25 16:18:24 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 15:57:10 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 	file.close();
 	//std::cout << str << std::endl;
 	if (valid_bracket(str) == false)
-		throw(ConfFileParseError("Invalid numbers bracket"));
+		throw(ConfFileParseError("invalid numbers bracket"));
 	if (!str.compare(0, 8, "server {"))
 	{
 		//std::cout << "IN1";
@@ -41,7 +41,7 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 		std::string	line;
 		line = get_line(str, 0);
 		if (nb_tokens(line.c_str()) != 2)
-			throw(ConfFileParseError("Invalid server header"));
+			throw(ConfFileParseError("invalid server header"));
 		int	ct = 1;
 		while (ct < nb_lines(str))
 		{
@@ -58,11 +58,11 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 			else if (!line.compare(0, 9, "location "))
 			{
 				if (nb_tokens(line.c_str()) != 3)
-					throw(ConfFileParseError("Invalid location header"));
+					throw(ConfFileParseError("invalid location header"));
 				new_location(new_server, str, ct);
 			}
 			// else
-			// 	throw(ConfFileParseError());
+			// 	throw(ConfFileParseError("wrong input in server"));
 			ct++;
 		}
 	}
@@ -75,11 +75,20 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 void new_location(ServerInfo &n_server, std::string &str, int &ct)
 {
 	Location	n_location(n_server.get_port());
-	std::string	line;
 	while (ct < nb_lines(str))
 	{
+		std::string	line;
 		line = get_line(str, ct);
-		if (!line.compare(0, 10, "autoindex "))
+		// if (to_skip(line, ct) == true)
+		// 	ct++;
+		// std::cout << "line = " << line << std::endl;
+		if (!line.compare(0, 9, "location "))
+		{
+			if (!line.compare(line.size() - 1, 1, "{"))
+				line.erase(line.size() - 1, 1);
+			n_location.set_location(URI, 9, line);
+		}
+		else if (!line.compare(0, 10, "autoindex "))
 			n_location.set_location(AUTOINDEX, 10, line);
 		else if (!line.compare(0, 6, "index "))
 			n_location.set_location(INDEX, 6, line);
@@ -91,6 +100,8 @@ void new_location(ServerInfo &n_server, std::string &str, int &ct)
 			n_location.set_location(UPLOADPATH, 12, line);
 		else if (!line.compare(0, 4, "cgi "))
 			n_location.set_location(CGI, 4, line);
+		// else
+		// 	throw(ConfFileParseError("wrong input in location"));
 		ct++;
 	}
 }
@@ -195,4 +206,16 @@ int nb_tokens(const char *str)
 			res++;
 	}
 	return res;
+}
+
+/*
+** Check if the line is skippable
+*/
+
+bool to_skip(std::string str, int ct)
+{
+	std::string line;
+
+	line = get_line(str, ct);
+	return (/*splitWhitespace(l).size() == 0 || */line.size() == 0 || line[0] == '#');
 }
