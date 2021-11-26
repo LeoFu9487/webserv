@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:26 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 17:46:24 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 18:50:27 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ class ServerInfo
 		std::vector<Location>		const &get_location() const;
 
 		void						set_server(int index, const int &pos, const std::string &str);
-		std::vector<Location>		*set_server_location();
+		std::vector<Location>		set_server_location();
 
 		void	print() const;
 

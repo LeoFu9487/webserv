@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 17:56:11 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 18:50:46 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,10 +262,8 @@ void ServerInfo::set_server(int index, const int &pos, const std::string &str)
 	server_func	funcs[] = {&ServerInfo::set_port, &ServerInfo::set_name,
 		&ServerInfo::set_error, &ServerInfo::set_client_body_size};
 
-	//tmp = str[pos]?
-	// std::cout << "str = " << str << std::endl;
+	// tmp = str[pos]
 	const char *tmp = str.c_str() + pos;
-	// std::cout << "tmp = " << tmp << std::endl;
 	int i = 0;
 	while (isspace(tmp[i]))
 		i++;
@@ -282,7 +280,7 @@ void ServerInfo::set_port(const char *p)
 	for (size_t i = 0; i < tmp.size(); i++)
 		if (tmp[i] < 48 || tmp[i] > 57)
 			throw(ConfFileParseError("put only digits for port"));
-	_port = atoi(p);
+	_port = atoi(tmp.c_str());
 }
 
 //server_name one or multiple(from string to vector?)
@@ -312,10 +310,10 @@ void ServerInfo::set_client_body_size(const char *s)
 	for (size_t i = 0; i < tmp.size(); i++)
 		if (tmp[i] < 48 || tmp[i] > 57)
 			throw(ConfFileParseError("put only digits for max client body size"));
-	_port = atoi(s);
+	_client_body_size = atoi(tmp.c_str());
 }
 
-std::vector<Location> *ServerInfo::set_server_location() { return &_location; }
+std::vector<Location> ServerInfo::set_server_location() { return _location; }
 
 void ServerInfo::print() const
 {

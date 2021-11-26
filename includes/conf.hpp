@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:31 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 17:46:47 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 18:22:04 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,5 @@ bool		valid_bracket(std::string str);
 int			nb_lines(std::string str);
 std::string get_line(std::string str, int n);
 int			nb_tokens(const char *);
-bool		to_skip(std::string str, int ct);
 void		new_location(ServerInfo &n_server, std::string &str, int &ct);
 void		parse_servers(std::vector<ServerInfo> &result, char *conf_file_path);

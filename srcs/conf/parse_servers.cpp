@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 17:48:09 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 18:40:34 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 			// 	throw(ConfFileParseError("wrong input in server"));
 			ct++;
 		}
+		new_server.print();
 	}
 }
 
@@ -79,9 +80,6 @@ void new_location(ServerInfo &n_server, std::string &str, int &ct)
 	{
 		std::string	line;
 		line = get_line(str, ct);
-		// if (to_skip(line, ct) == true)
-		// 	ct++;
-		// std::cout << "line = " << line << std::endl;
 		if (!line.compare(0, 9, "location "))
 		{
 			if (!line.compare(line.size() - 1, 1, "{"))
@@ -106,6 +104,7 @@ void new_location(ServerInfo &n_server, std::string &str, int &ct)
 		// 	throw(ConfFileParseError("wrong input in location"));
 		ct++;
 	}
+	n_location.print();
 }
 
 /*
@@ -207,16 +206,4 @@ int nb_tokens(const char *str)
 			res++;
 	}
 	return res;
-}
-
-/*
-** Check if the line is skippable
-*/
-
-bool to_skip(std::string str, int ct)
-{
-	std::string line;
-
-	line = get_line(str, ct);
-	return (/*splitWhitespace(l).size() == 0 || */line.size() == 0 || line[0] == '#');
 }
