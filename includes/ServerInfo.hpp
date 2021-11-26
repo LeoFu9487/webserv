@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerInfo.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
+/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:26 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 15:44:07 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 17:27:37 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class Location
 		std::string							_uri;
 		std::string							_index;
 		std::string							_root;
+		std::string							_redirect;
 		std::vector<std::string>			_allow_method;
 		std::string							_upload_path;
 		std::map<std::string, std::string>	_cgi;
@@ -45,6 +46,7 @@ class Location
 		std::string							const &get_uri() const;
 		bool								const &get_autoindex() const;
 		std::string							const &get_index() const;
+		std::string							const &get_redirect() const;
 		std::vector<std::string>			const &get_allow_method() const;
 		std::string							const &get_root() const;
 		std::string							const &get_upload_path() const;

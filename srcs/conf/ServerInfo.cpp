@@ -6,7 +6,7 @@
 /*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 16:12:15 by yfu              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 17:29:14 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,13 @@ Location::~Location() {}
 
 int const &Location::get_port() const { return _port; }
 
+std::string	const &Location::get_uri() const { return _uri;}
+
 bool const &Location::get_autoindex() const { return _autoindex; }
 
 std::string const &Location::get_index() const { return _index; }
+
+std::string const &Location::get_redirect() const { return _redirect; }
 
 std::vector<std::string> const &Location::get_allow_method() const { return _allow_method; }
 

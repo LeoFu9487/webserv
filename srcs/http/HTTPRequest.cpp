@@ -29,7 +29,9 @@ static bool find_file(Location const &location, std::string const &path)
 
 	if (path.size() == uri.size() || path.size() + 1 == uri.size())
 	{
-		
+		// index or autoindex
+		if (location.get_index() != "")
+			return false;
 	}
 	/*
 	autoindex
