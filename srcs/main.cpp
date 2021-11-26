@@ -14,7 +14,9 @@ int main(int ac, char **av)
 	try
 	{
 		parse_servers(serverlist, av[1]);
+		#ifdef TEST
 		serverlist.push_back(ServerInfo());
+		#endif
 		create_listening_sockets(fd_of_servers, serverlist);
 		start_server(fd_of_servers);
 		// close_sockets(fd_of_servers); also close clients ?

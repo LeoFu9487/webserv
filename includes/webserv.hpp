@@ -8,6 +8,7 @@
 #include <sys/socket.h> // socket, accept, listen, send, recv, bind, connect, setsockopt, getsockname
 #include <fcntl.h> // fcntl
 #include <unistd.h> // read, write, close
+#include <dirent.h>
 
 #ifdef __linux__
 	#include <sys/epoll.h> // epoll
