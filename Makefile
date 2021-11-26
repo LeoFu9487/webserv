@@ -22,7 +22,7 @@ MACS_FILE = kqueue_operation.cpp
 
 HTTP_PATH = http/
 
-HTTP_FILE = deal_with_request.cpp
+HTTP_FILE = deal_with_request.cpp	HTTPRequest.cpp	HTTPResponse.cpp
 
 SRCS_PATH = srcs/
 
@@ -43,7 +43,8 @@ SRCS = $(addprefix $(SRCS_PATH), $(SRCS_FILE))
 OBJS = $(SRCS:.cpp=.o)
 
 HEADER_FILE = webserv.hpp	ServerInfo.hpp	exception.hpp	utils.hpp	conf.hpp\
-socket.hpp	connect.hpp	MACROS.hpp	ClientInfo.hpp	http.hpp
+socket.hpp	connect.hpp	MACROS.hpp	ClientInfo.hpp	http.hpp\
+HTTPRequest.hpp	HTTPResponse.hpp
 
 HEADER_PATH = includes/
 
