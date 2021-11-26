@@ -6,7 +6,7 @@
 /*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/25 22:35:49 by yfu              ###   ########lyon.fr   */
+/*   Updated: 2021/11/25 23:11:59 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ void Location::print() const
 */
 
 ServerInfo::ServerInfo()
-:	_port(0),
+:	_port(8080),
 	_IP("0.0.0.0"),
 	_client_body_size(0) {}
 
@@ -257,11 +257,3 @@ void ServerInfo::print() const
 	std::cerr << "_client_body_size = " << _client_body_size << std::endl;
 }
 
-// #ifdef TEST
-// ServerInfo::ServerInfo()
-// {
-// 	_port = 8080;
-// 	_host = "0.0.0.0";
-// 	_max_client = 100;
-// }
-// #endif

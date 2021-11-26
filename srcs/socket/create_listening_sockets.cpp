@@ -7,7 +7,7 @@ static int	create_one_listening_socket(ServerInfo &info)
 	
 	if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 		throw(FailToCreateSocket());
-	
+	print_log("Server " + info.get_name() + " created");
 	if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &enabled, sizeof(enabled)) == -1)
 		throw(FailToSetSocketOption());
 	

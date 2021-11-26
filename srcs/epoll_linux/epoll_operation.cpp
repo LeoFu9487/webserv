@@ -24,8 +24,12 @@ void	add_read_event_in_epoll(int epoll_fd, int socket_fd)
 
 void	delete_client_from_epoll(std::map<int, ClientInfo> &fd_map, int epoll_fd, int target_fd)
 {
+	// if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, target_fd, NULL) == -1)
+	// 	throw(FailToControlEpoll());
 	if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, target_fd, NULL) == -1)
-		throw(FailToControlEpoll());
+		print_log("One client fail to disconnect");
+	else
+		print_log("One client disconnected successfully");
 	close(target_fd);
 	fd_map.erase(target_fd);
 }
@@ -37,7 +41,11 @@ void	accept_new_client(int epoll_fd, int server_fd, std::map<int, ClientInfo> &f
 
 	int client_fd = accept(server_fd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len);
 	if (client_fd < 0)
-		throw(FailToAccept());
+	{
+		print_log("One client fail to connect");
+		return ;
+	}
+	print_log("One client connected successfully");
 	make_socket_nonblock(client_fd); // is it correct ?
 	add_read_event_in_epoll(epoll_fd, client_fd);
 	/*
