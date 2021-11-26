@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 08:59:45 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 09:06:49 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,9 +112,17 @@ void Location::set_root(const char *r)
 void Location::set_allow_method(const char *m)
 {
 	std::stringstream	str(m);
+	#ifndef __linux__
 	std::istream_iterator<std::string>	begin(str);
 	std::istream_iterator<std::string>	end;
 	std::vector<std::string>	_allow_method(begin, end);
+	#else
+	std::string	token;
+	while (str >> token)
+	{
+		_allow_method.push_back(token);
+	}
+	#endif
 	const char *method_check[] = { "POST", "GET", "HEAD", "DELETE"};
 	for (size_t i = 0; i < _allow_method.size(); i++)
 	{

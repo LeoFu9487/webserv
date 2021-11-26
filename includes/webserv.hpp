@@ -23,6 +23,7 @@
 #include <vector>
 #include <map>
 #include <cstring>
+#include <stack>
 
 // *.hpp
 
