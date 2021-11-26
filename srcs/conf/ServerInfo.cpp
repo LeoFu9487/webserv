@@ -6,7 +6,7 @@
 /*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 16:10:11 by yfu              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 16:12:15 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,9 +157,18 @@ void Location::set_upload_path(const char *u)
 void Location::set_cgi(const char *c)
 {
 	std::stringstream	str(c);
+	#ifndef __linux
 	std::istream_iterator<std::string>	begin(str);
 	std::istream_iterator<std::string>	end;
 	std::vector<std::string>	tmp(begin, end);
+	#else
+	std::vector<std::string> tmp;
+	std::string	token;
+	while (str >> token)
+	{
+		tmp.push_back(token);
+	}
+	#endif
 	// for (std::vector<std::string>::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
 	// 	std::cout << "tmp = " << *it << std::endl;
 	if (tmp.size() != 2)

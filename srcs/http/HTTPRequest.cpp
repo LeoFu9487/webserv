@@ -19,15 +19,15 @@ static bool find_file(Location const &location, std::string const &path)
 	// std::ifstream infile(fileName);
     // return infile.good();
 	
-	std::string url = location.get_url();
-	if (path.size() < url.size() || path.substr(0, url.size()) != url ||
-	(path.size() > url.size() && path[url.size()] != '/') )
+	std::string uri = location.get_uri();
+	if (path.size() < uri.size() || path.substr(0, uri.size()) != uri ||
+	(path.size() > uri.size() && path[uri.size()] != '/') )
 		return false;
 	
-	if (location.get_redirect())
-		return true;
+	// if (location.get_redirect())
+	// 	return true;
 
-	if (path.size() == url.size() || path.size() + 1 == url.size())
+	if (path.size() == uri.size() || path.size() + 1 == uri.size())
 	{
 		
 	}
@@ -48,14 +48,14 @@ void	HTTPRequest::check_request(ServerInfo const &server)
 	
 	// check path
 	std::vector<Location>::const_iterator it;
-	for (it = server.get_location()->begin() ; it != server.get_location()->end() ; ++it)
+	for (it = server.get_location().begin() ; it != server.get_location().end() ; ++it)
 		if (find_file(*it, _path))
 		{
 			this->set_location(*it);
 			break ;
 		}
 	
-	if (it == server.get_location()->end())
+	if (it == server.get_location().end())
 		throw(NotFound);
 
 	
