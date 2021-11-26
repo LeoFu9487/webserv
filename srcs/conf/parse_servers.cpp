@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 15:57:10 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 17:48:09 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ void new_location(ServerInfo &n_server, std::string &str, int &ct)
 			n_location.set_location(INDEX, 6, line);
 		else if (!line.compare(0, 5, "root "))
 			n_location.set_location(ROOT, 5, line);
+		else if (!line.compare(0, 9, "redirect "))
+			n_location.set_location(REDIRECT, 9, line);
 		else if (!line.compare(0, 13, "allow_method "))
 			n_location.set_location(METHOD, 13, line);
 		else if (!line.compare(0, 12, "upload_path "))
@@ -124,7 +126,6 @@ bool valid_bracket(std::string str)
 			if (!bracket.empty() && bracket.top() == '{')
 				bracket.pop();
 		}
-
 	}
 	if (bracket.empty())
 		return true;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerInfo.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
+/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 17:29:14 by yfu              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 17:56:11 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@
 
 Location::Location(int p)
 :	_port(p),
-	_autoindex(0)
+	_autoindex(0),
+	_index(""),
+	_root(""),
+	_redirect("")
 {
 	const char *method_list[] = { "POST", "GET", "HEAD", "DELETE"};
 	_allow_method.insert(_allow_method.begin(), method_list, method_list + 4);
@@ -27,9 +30,13 @@ Location::Location(int p)
 Location::Location(const Location &copy)
 :	_port(copy._port),
 	_autoindex(copy._autoindex),
+	_uri(copy._uri),
 	_index(copy._index),
 	_root(copy._root),
-	_allow_method(copy._allow_method) {}
+	_redirect(copy._redirect),
+	_allow_method(copy._allow_method),
+	_upload_path(copy._upload_path),
+	_cgi(copy._cgi) {}
 
 Location &Location::operator=(const Location &copy)
 {
@@ -69,8 +76,9 @@ void Location::set_location(int index, const int &pos, const std::string &str)
 {
 	typedef void (Location::*location_funcs)(const char *);
 	location_funcs	funcs[] = {&Location::set_uri, &Location::set_autoindex,
-		&Location::set_index, &Location::set_root, &Location::set_allow_method,
-		&Location::set_upload_path, &Location::set_cgi};
+		&Location::set_index, &Location::set_root, &Location::set_redirect,
+		&Location::set_allow_method, &Location::set_upload_path,
+		&Location::set_cgi};
 
 	//tmp = str[pos]?
 	// std::cout << "str = " << str << std::endl;
@@ -118,6 +126,15 @@ void Location::set_root(const char *r)
 	std::string	tmp = r;
 	tmp.erase(std::remove_if(tmp.begin(), tmp.end(), isspace), tmp.end());
 	_root = tmp;
+}
+
+void Location::set_redirect(const char *r)
+{
+	if (nb_tokens(r) != 1)
+		throw(ConfFileParseError("put only one redirect path"));
+	std::string	tmp = r;
+	tmp.erase(std::remove_if(tmp.begin(), tmp.end(), isspace), tmp.end());
+	_redirect = tmp;
 }
 
 void Location::set_allow_method(const char *m)
@@ -173,25 +190,24 @@ void Location::set_cgi(const char *c)
 		tmp.push_back(token);
 	}
 	#endif
-	// for (std::vector<std::string>::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
-	// 	std::cout << "tmp = " << *it << std::endl;
 	if (tmp.size() != 2)
 		throw(ConfFileParseError("wrong input for cgi"));
 	_cgi.insert(std::pair<std::string, std::string>(tmp[0], tmp[1]));
-	// for (std::map<std::string, std::string>::const_iterator it = _cgi.begin(); it != _cgi.end(); ++it)
-	// 	std::cout << it->first << " => " << it->second << std::endl;
 }
 
 void Location::print() const
 {
 	std::cerr << "----------Location attributes----------" << std::endl;
-	std::cerr << "_uri = " << _uri << std::endl;
 	std::cerr << "_port = " << _port << std::endl;
 	std::cerr << "_autoindex = " << _autoindex << std::endl;
+	std::cerr << "_uri = " << _uri << std::endl;
 	std::cerr << "_index = " << _index << std::endl;
 	std::cerr << "_root = " << _root << std::endl;
+	std::cout << "_redirect = " << _redirect << std::endl;
 	for (std::vector<std::string>::const_iterator it = _allow_method.begin(); it != _allow_method.end(); ++it)
 		std::cerr << "_allow_method = " << *it << std::endl;
+	for (std::map<std::string, std::string>::const_iterator it = _cgi.begin(); it != _cgi.end(); ++it)
+		std::cout << it->first << " => " << it->second << std::endl;
 }
 
 /*
@@ -208,7 +224,8 @@ ServerInfo::ServerInfo(const ServerInfo &copy)
 	_server_name(copy._server_name),
 	_IP(copy._IP),
 	_error_pages(copy._error_pages),
-	_client_body_size(copy._client_body_size) {}
+	_client_body_size(copy._client_body_size),
+	_location(copy._location) {}
 
 ServerInfo &ServerInfo::operator=(const ServerInfo &copy)
 {

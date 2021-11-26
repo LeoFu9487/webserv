@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:31 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 15:42:27 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 17:46:47 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ enum e_location
 	AUTOINDEX,
 	INDEX,
 	ROOT,
+	REDIRECT,
 	METHOD,
 	UPLOADPATH,
 	CGI

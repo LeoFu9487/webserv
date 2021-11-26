@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerInfo.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
+/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:26 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 17:27:37 by yfu              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 17:46:24 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ class Location
 		void	set_uri(const char *);
 		void	set_autoindex(const char *);
 		void	set_index(const char *);
+		void	set_redirect(const char *);
 		void	set_allow_method(const char *);
 		void	set_root(const char *);
 		void	set_upload_path(const char *);
