@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:31 by xli               #+#    #+#             */
-/*   Updated: 2021/11/25 10:45:57 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/25 16:17:18 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,9 @@ enum e_location
 	AUTOINDEX,
 	INDEX,
 	ROOT,
-	METHOD
+	METHOD,
+	UPLOADPATH,
+	CGI
 };
 
 bool		valid_bracket(std::string str);

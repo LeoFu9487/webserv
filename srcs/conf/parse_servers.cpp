@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/25 10:47:20 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/25 16:18:24 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,10 @@ void new_location(ServerInfo &n_server, std::string &str, int &ct)
 			n_location.set_location(ROOT, 5, line);
 		else if (!line.compare(0, 13, "allow_method "))
 			n_location.set_location(METHOD, 13, line);
+		else if (!line.compare(0, 12, "upload_path "))
+			n_location.set_location(UPLOADPATH, 12, line);
+		else if (!line.compare(0, 4, "cgi "))
+			n_location.set_location(CGI, 4, line);
 		ct++;
 	}
 }
