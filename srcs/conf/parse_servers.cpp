@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/27 16:40:53 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/27 20:50:22 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,27 +54,30 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 void new_server(std::string &str, int &pos)
 {
 	ServerInfo	new_server;
-	int	ct = pos;
+	int	ct = pos + 1;
 	while (ct < closing_bracket(str, pos))
 	{
-
 		std::string line = get_line(str, ct);
-		if (!line.compare(0, 7, "listen "))
-			new_server.set_server(PORT, 7, line);
-		else if (!line.compare(0, 12, "server_name "))
-			new_server.set_server(NAME, 12, line);
-		else if (!line.compare(0, 11, "error_page "))
-			new_server.set_server(ERROR, 11, line);
-		else if (!line.compare(0, 9, "max_size "))
-			new_server.set_server(SIZE, 9, line);
-		else if (!line.compare(0, 9, "location "))
+		std::string attri = line.substr(0, line.find(" "));
+		if (is_valid_attribute(attri, server_attributes) || is_skippable(str, ct))
 		{
-			if (nb_tokens(line.c_str()) != 3 || line.compare(line.size() - 1, 1, "{"))
-				throw(ConfFileParseError("invalid location header"));
-			new_location(new_server, str, ct);
+			if (!line.compare(0, 7, "listen "))
+				new_server.set_server(PORT, 7, line);
+			else if (!line.compare(0, 12, "server_name "))
+				new_server.set_server(NAME, 12, line);
+			else if (!line.compare(0, 11, "error_page "))
+				new_server.set_server(ERROR, 11, line);
+			else if (!line.compare(0, 9, "max_size "))
+				new_server.set_server(SIZE, 9, line);
+			else if (!line.compare(0, 9, "location "))
+			{
+				if (nb_tokens(line.c_str()) != 3 || line.compare(line.size() - 1, 1, "{"))
+					throw(ConfFileParseError("invalid location header"));
+				new_location(new_server, str, ct);
+			}
 		}
-		// else
-		// 	throw(ConfFileParseError("wrong input in server"));
+		else
+			throw(ConfFileParseError("wrong input in server"));
 		ct++;
 	}
 	// new_server.print();
@@ -232,4 +235,34 @@ int nb_tokens(const char *str)
 			res++;
 	}
 	return res;
+}
+
+/*
+** Check if the attribute is valid
+*/
+
+bool is_valid_attribute(std::string str, const char *valid_names[])
+{
+	size_t i;
+
+	i = 0;
+	while (valid_names[i])
+	{
+		if (str == valid_names[i])
+			return true;
+		++i;
+	}
+	return false;
+}
+
+/*
+** Check if the line is skippable
+*/
+
+bool is_skippable(std::string str, int pos)
+{
+	std::string line;
+
+	line = get_line(str, pos);
+	return (line.size() == 0 || line[0] == '#' || line[0] == '}');
 }
