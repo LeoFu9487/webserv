@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 18:50:46 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 20:53:55 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ Location::Location(int p)
 	_root(""),
 	_redirect("")
 {
-	const char *method_list[] = { "POST", "GET", "HEAD", "DELETE"};
-	_allow_method.insert(_allow_method.begin(), method_list, method_list + 4);
+	// const char *method_list[] = { "POST", "GET", "HEAD", "DELETE"};
+	// _allow_method.insert(_allow_method.begin(), method_list, method_list + 4);
 }
 
 Location::Location(const Location &copy)
@@ -203,11 +203,11 @@ void Location::print() const
 	std::cerr << "_uri = " << _uri << std::endl;
 	std::cerr << "_index = " << _index << std::endl;
 	std::cerr << "_root = " << _root << std::endl;
-	std::cout << "_redirect = " << _redirect << std::endl;
+	std::cerr << "_redirect = " << _redirect << std::endl;
 	for (std::vector<std::string>::const_iterator it = _allow_method.begin(); it != _allow_method.end(); ++it)
 		std::cerr << "_allow_method = " << *it << std::endl;
 	for (std::map<std::string, std::string>::const_iterator it = _cgi.begin(); it != _cgi.end(); ++it)
-		std::cout << it->first << " => " << it->second << std::endl;
+		std::cerr << "_cgi = " << it->first << " => " << it->second << std::endl;
 }
 
 /*

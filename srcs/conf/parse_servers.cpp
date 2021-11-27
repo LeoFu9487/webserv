@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 18:40:34 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/27 16:40:53 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,42 +31,53 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 	while (file.get(c))
 		str.push_back(c);
 	file.close();
-	//std::cout << str << std::endl;
 	if (valid_bracket(str) == false)
 		throw(ConfFileParseError("invalid numbers bracket"));
-	if (!str.compare(0, 8, "server {"))
+	int i = 0;
+	while (i < nb_lines(str))
 	{
-		//std::cout << "IN1";
-		ServerInfo	new_server;
-		std::string	line;
-		line = get_line(str, 0);
-		if (nb_tokens(line.c_str()) != 2)
-			throw(ConfFileParseError("invalid server header"));
-		int	ct = 1;
-		while (ct < nb_lines(str))
+		std::string	line = get_line(str, i);
+		if (!line.compare(0, 8, "server {"))
 		{
-			//std::cout << "IN2";
-			line = get_line(str, ct);
-			if (!line.compare(0, 7, "listen "))
-				new_server.set_server(PORT, 7, line);
-			else if (!line.compare(0, 12, "server_name "))
-				new_server.set_server(NAME, 12, line);
-			else if (!line.compare(0, 11, "error_page "))
-				new_server.set_server(ERROR, 11, line);
-			else if (!line.compare(0, 9, "max_size "))
-				new_server.set_server(SIZE, 9, line);
-			else if (!line.compare(0, 9, "location "))
-			{
-				if (nb_tokens(line.c_str()) != 3)
-					throw(ConfFileParseError("invalid location header"));
-				new_location(new_server, str, ct);
-			}
-			// else
-			// 	throw(ConfFileParseError("wrong input in server"));
-			ct++;
+			if (nb_tokens(line.c_str()) != 2 || line.compare(line.size() - 1, 1, "{"))
+				throw(ConfFileParseError("invalid server header"));
+			new_server(str, i);
 		}
-		new_server.print();
+		i++;
 	}
+}
+
+/*
+** Parsing and filling server info
+*/
+
+void new_server(std::string &str, int &pos)
+{
+	ServerInfo	new_server;
+	int	ct = pos;
+	while (ct < closing_bracket(str, pos))
+	{
+
+		std::string line = get_line(str, ct);
+		if (!line.compare(0, 7, "listen "))
+			new_server.set_server(PORT, 7, line);
+		else if (!line.compare(0, 12, "server_name "))
+			new_server.set_server(NAME, 12, line);
+		else if (!line.compare(0, 11, "error_page "))
+			new_server.set_server(ERROR, 11, line);
+		else if (!line.compare(0, 9, "max_size "))
+			new_server.set_server(SIZE, 9, line);
+		else if (!line.compare(0, 9, "location "))
+		{
+			if (nb_tokens(line.c_str()) != 3 || line.compare(line.size() - 1, 1, "{"))
+				throw(ConfFileParseError("invalid location header"));
+			new_location(new_server, str, ct);
+		}
+		// else
+		// 	throw(ConfFileParseError("wrong input in server"));
+		ct++;
+	}
+	// new_server.print();
 }
 
 /*
@@ -76,14 +87,12 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 void new_location(ServerInfo &n_server, std::string &str, int &ct)
 {
 	Location	n_location(n_server.get_port());
-	while (ct < nb_lines(str))
+	while (get_line(str, ct) != "}")
 	{
-		std::string	line;
-		line = get_line(str, ct);
+		std::string	line = get_line(str, ct);
 		if (!line.compare(0, 9, "location "))
 		{
-			if (!line.compare(line.size() - 1, 1, "{"))
-				line.erase(line.size() - 1, 1);
+			line.erase(line.size() - 1, 1);
 			n_location.set_location(URI, 9, line);
 		}
 		else if (!line.compare(0, 10, "autoindex "))
@@ -100,11 +109,11 @@ void new_location(ServerInfo &n_server, std::string &str, int &ct)
 			n_location.set_location(UPLOADPATH, 12, line);
 		else if (!line.compare(0, 4, "cgi "))
 			n_location.set_location(CGI, 4, line);
-		// else
-		// 	throw(ConfFileParseError("wrong input in location"));
+		else
+		 	throw(ConfFileParseError("wrong input in location"));
 		ct++;
 	}
-	n_location.print();
+	// n_location.print();
 }
 
 /*
@@ -132,12 +141,29 @@ bool valid_bracket(std::string str)
 }
 
 /*
-**	listen 8080
-**	server_name localhost
-**	root www
-**	error_page 404.html
-**	max_size 10m
+** Get the line of the matching closing bracket
 */
+
+int closing_bracket(std::string str, int pos)
+{
+	int	line;
+	line = pos + 1;
+	int	ct = 0;
+	for (int i = pos; i < nb_lines(str); i++)
+	{
+		if (get_line(str, i).find("{") != std::string::npos)
+
+			++ct;
+		else if (get_line(str, i).find("}") != std::string::npos)
+		{
+			--ct;
+			if (ct == 0)
+				return (line);
+		}
+		++line;
+	}
+	return (-1);
+}
 
 /*
 ** Get total number of lines of the string
