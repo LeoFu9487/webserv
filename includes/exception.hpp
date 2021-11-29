@@ -130,6 +130,23 @@ class ClientNotInMap : public std::exception
 		}
 };
 
+class FailToCreateKqueue : public std::exception
+{
+	public:
+		char const	*what() const throw()
+		{
+			return "Fail To Create Kqueue";
+		}
+};
+
+class FailToControlKqueue : public std::exception
+{
+	public:
+		char const	*what() const throw()
+		{
+			return "Fail To Control Kqueue";
+		}
+};
 
 /*
 HTTP
