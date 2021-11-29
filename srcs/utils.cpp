@@ -38,3 +38,33 @@ bool	file_exist(std::string const &file)
         return false;
     return true;
 }
+
+std::string get_file_type(std::string const &file_uri)
+{
+    size_t  dot = file_uri.find_last_of(".");
+
+    if (dot == std::string::npos)
+        return "";
+    return file_uri.substr(dot + 1);
+}
+
+std::string get_file_content(std::string const &content)
+{
+    std::ifstream input_file(content.c_str());
+
+    return std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
+}
+
+std::string std::to_string(int n)
+{
+    ostringstream convert;
+    convert << n;
+    return convert.str();
+}
+
+std::string std::to_string(size_t n)
+{
+    ostringstream convert;
+    convert << n;
+    return convert.str();
+}
