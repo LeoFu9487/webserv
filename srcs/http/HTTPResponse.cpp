@@ -92,6 +92,7 @@ std::map<std::string, std::string> HTTPResponse::init_content_type()
 			type["png"] = "image/png";
 			type["css"] = "text/css";
 			type["html"] = "text/html";
+			type["htm"] = "text/html";
 			type["javascript"] = "text/javascript";
 			
 			return type;
@@ -136,6 +137,7 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 		}
 		else if (method == "POST")
 		{
+			// source : https://reqbin.com/Article/HttpPost#:~:text=POST%20is%20an%20HTTP%20method,and%20images%20to%20the%20server.
 			// todo	
 		}
 		else if (method == "DELETE")
@@ -143,9 +145,7 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 			// todo
 		}
 		else
-		{
-			// todo ?
-		}
+			throw(MethodNotAllowed);
 	}
 	else if (behavior == redirect)
 	{
