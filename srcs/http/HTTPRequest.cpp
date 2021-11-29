@@ -1,7 +1,7 @@
 #include "../../includes/webserv.hpp"
 
 
-HTTPRequest::HTTPRequest(std::string const &request):_location(NULL) // throw status_code if error
+HTTPRequest::HTTPRequest(std::string const &request):_behavior(none),_file_uri("") // throw status_code if error
 {
 	std::stringstream	ss(request);
 
@@ -13,33 +13,60 @@ HTTPRequest::HTTPRequest(std::string const &request):_location(NULL) // throw st
 		throw(HTTPVersionNotSupported);
 }
 
-static bool find_file(Location const &location, std::string const &path)
+static bool find_file(HTTPRequest &request, Location const &location, std::string path)
 {
-	// todo
-	// std::ifstream infile(fileName);
-    // return infile.good();
-	
 	std::string uri = location.get_uri();
 	if (path.size() < uri.size() || path.substr(0, uri.size()) != uri ||
 	(path.size() > uri.size() && path[uri.size()] != '/') )
 		return false;
-	
-	// if (location.get_redirect())
-	// 	return true;
 
-	if (path.size() == uri.size() || path.size() + 1 == uri.size())
+	// redirect
+
+	if (location.get_redirect() != "")
+	{
+		request.set_file_uri(path.replace(0, uri.size(), location.get_redirect()));
+		request.set_behavior(redirect);
+		return true;
+	}
+
+
+	std::string	root = location.get_root();
+	if (root == "" || !directory_exist(root))
+		return false;
+	
+
+	if (path.size() <= uri.size() + 1) // path == location_uri or path == location_uri + 1
 	{
 		// index or autoindex
-		if (location.get_index() != "")
-			return false;
+		if (location.get_autoindex())
+		{
+			request.set_file_uri(root);
+			request.set_behavior(autoindex);
+			return true;
+		}
+		std::string index_path = location.get_index();
+		if (index_path != "")
+		{
+			if (root[root.size() - 1] != '/' && index_path[0] != '/')
+				index_path = root + "/" + index_path;
+			else
+				index_path = root + index_path;
+			if (file_exist(index_path))
+			{
+				request.set_file_uri(index_path);
+				request.set_behavior(existed_file);
+				return true;
+			}
+		}
 	}
-	/*
-	autoindex
-	redirect
-	root
-	index
-	*/
-
+	
+	path.replace(0, uri.size(), root);
+	if (file_exist(path))
+	{
+		request.set_file_uri(path);
+		request.set_behavior(existed_file);
+		return true;
+	}
 	return false;
 }
 
@@ -50,12 +77,10 @@ void	HTTPRequest::check_request(ServerInfo const &server)
 	
 	// check path
 	std::vector<Location>::const_iterator it;
+
 	for (it = server.get_location().begin() ; it != server.get_location().end() ; ++it)
-		if (find_file(*it, _path))
-		{
-			this->set_location(*it);
+		if (find_file(*this, *it, _path))
 			break ;
-		}
 	
 	if (it == server.get_location().end())
 		throw(NotFound);
@@ -71,12 +96,29 @@ void	HTTPRequest::check_request(ServerInfo const &server)
 	throw(MethodNotAllowed);
 }
 
-void	HTTPRequest::set_location(Location const &location)
+void	HTTPRequest::set_behavior(Location_behavior behavior)
 {
-	_location = &location;
+	_behavior = behavior;
 }
 
-Location const	*HTTPRequest::get_location() const
+void	HTTPRequest::set_file_uri(std::string const &file_uri)
 {
-	return _location;
+	_file_uri = file_uri;
+}
+
+Location_behavior	HTTPRequest::get_behavior() const
+{
+	return _behavior;
+}
+
+std::string const &HTTPRequest::get_file_uri() const
+{
+	return _file_uri;
+}
+
+void	HTTPRequest::print() const
+{
+	std::cerr	<< "HTTP Request attributes :\n"
+				<< "file_uri : " << get_file_uri() <<"\n"
+				<< "behavior : " << get_behavior() << "\n\n";
 }

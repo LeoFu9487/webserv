@@ -14,7 +14,8 @@ todo :
 5. Should I make all the sockets non-block ?
 6. Should I erase old request every time I get a new one?
 7. Is it necessary to set client to write in epoll?  If we write until buffer is full, write will write EAGAIN in errno, at this moment EPOLLOUT will be triggered in epoll. ref : https://www.gushiciku.cn/pl/g2xg/zh-tw
-
+8. two the same uri for different locations in the same server
+9. need to test find_file in HTTPRequest.cpp
 
 ## reference
 
