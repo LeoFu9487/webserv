@@ -77,7 +77,6 @@ class HTTPResponse
 	private:
 		static std::map<int, std::string> init_code_status();
 		static std::map<std::string, std::string> init_content_type();
-		static std::map<int, std::string> _status_line;
 		static std::map<std::string, std::string> _content_type;
 		static std::string get_default_error_page(status_code error_code);
 		std::string	_HTTP_version;
@@ -90,6 +89,7 @@ class HTTPResponse
 		std::string	_msg;
 
 	public:
+		static std::map<int, std::string> _status_line;
 		static void	send_error_page(int fd, std::string const &error_pages_root, status_code error_code);
 
 		HTTPResponse(std::string const &HTTP_version, std::string const &method, std::string const &file_uri, Location_behavior behavior, status_code status = Undefined);

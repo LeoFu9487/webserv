@@ -4,7 +4,7 @@ std::map<int, std::string> HTTPResponse::_status_line = init_code_status();
 std::map<std::string, std::string> HTTPResponse::_content_type = init_content_type();
 
 void HTTPResponse::set_HTTP_version(std::string const &str) { _HTTP_version = str; }
-void HTTPResponse::set_status_code(status_code status) { _status_code = status; }
+void HTTPResponse::set_status_code(status_code status) { if (_status_code == Undefined) _status_code = status;}
 void HTTPResponse::set_file_uri(std::string const &uri) { _file_uri = uri; }
 
 std::string const &HTTPResponse::get_HTTP_version() const { return _HTTP_version; }
@@ -113,7 +113,6 @@ std::string HTTPResponse::get_default_error_page(status_code error_code)
 
 HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &method, std::string const &file_uri, Location_behavior behavior, status_code status) : _HTTP_version(HTTP_version), _status_code(status), _file_uri(file_uri)
 {
-	// todo : if status == Undefined ?
 	if (behavior == existed_file)
 	{
 		if (method == "GET")
@@ -121,16 +120,16 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 			std::map<std::string, std::string>::iterator file_type_iterator = _content_type.find(get_file_type(file_uri));
 			if (directory_exist(get_file_uri())) // want to read a file, but it's a directory
 				throw(Forbidden);
-			if (!file_exist(get_file_uri()))
+			if (!uri_exist(get_file_uri()))
 				throw(NotFound);
 			if (file_type_iterator == _content_type.end())
 				throw(UnsupportedMediaType);
 			std::string const &content = get_file_content(get_file_uri());
 			
 			if (content.size() == 0)
-				status = NoContent;
+				set_status_code(NoContent);
 			else
-				status = OK;
+				set_status_code(OK);;
 
 			_msg = "HTTP/" + get_HTTP_version() + " " + std::to_string(get_status_code()) + " " + _status_line[get_status_code()] + "\r\n";
 			_msg += "Content-Type: " + file_type_iterator->second + "\r\nContent-Length:" + std::to_string(content.size()) + "\r\n\n" + content;
@@ -150,11 +149,22 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 	}
 	else if (behavior == redirect)
 	{
-		// todo
+		// source : https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
+		set_status_code(MovedPermanently);
+		
+		_msg = "HTTP/" + get_HTTP_version() + " " + std::to_string(get_status_code()) + " " + _status_line[get_status_code()] + "\r\n";
+		_msg += "Location: " + get_file_uri();
 	}
 	else if (behavior == autoindex)
 	{
-		// todo
+		if (!directory_exist(get_file_uri()))
+			throw(NotFound);
+		Autoindex file(get_file_uri());
+		
+		set_status_code(OK);
+		_msg = "HTTP/" + get_HTTP_version() + " " + std::to_string(get_status_code()) + " " + _status_line[get_status_code()] + "\r\n";
+		_msg += "Content-Type: text/html\r\nContent-Length:" + std::to_string(file.get_html().size()) + "\r\n\n" + file.get_html();
+
 	}
 	else
 	{
@@ -168,6 +178,7 @@ void HTTPResponse::send_error_page(int fd, std::string const &error_pages_root, 
 	{
 		HTTPResponse response("1.1", "GET", error_pages_root + "/" + std::to_string(error_code) + ".html", existed_file, error_code);
 		write(fd, response.get_msg().c_str(), response.get_msg().size());
+		// std::cerr << response.get_msg() << std::endl;
 	}
 	catch (status_code status)
 	{
@@ -177,5 +188,6 @@ void HTTPResponse::send_error_page(int fd, std::string const &error_pages_root, 
 			exit(EXIT_FAILURE);
 		}
 		write(fd, get_default_error_page(error_code).c_str(), get_default_error_page(error_code).size());
+		// std::cerr << get_default_error_page(error_code) << std::endl;
 	}
 }

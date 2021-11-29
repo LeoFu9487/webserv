@@ -51,7 +51,7 @@ static bool find_file(HTTPRequest &request, Location const &location, std::strin
 				index_path = root + "/" + index_path;
 			else
 				index_path = root + index_path;
-			if (file_exist(index_path))
+			if (uri_exist(index_path))
 			{
 				request.set_file_uri(index_path);
 				request.set_behavior(existed_file);
@@ -64,12 +64,13 @@ static bool find_file(HTTPRequest &request, Location const &location, std::strin
 		root += "/";
 	path.replace(0, uri.size(), root);
 
-	if (file_exist(path))
+	if (uri_exist(path))
 	{
 		request.set_file_uri(path);
 		request.set_behavior(existed_file);
 		return true;
 	}
+
 	return false;
 }
 
@@ -91,7 +92,6 @@ void	HTTPRequest::check_request(ServerInfo const &server)
 
 	if (it == server.get_location().end())
 	{
-		// std::cerr << "JAJAJA\n";
 		throw(NotFound);
 	}
 	
