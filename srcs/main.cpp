@@ -17,6 +17,12 @@ int main(int ac, char **av)
 		#ifdef TEST
 		serverlist.push_back(ServerInfo());
 		#endif
+		// std::cerr << serverlist.size() <<"\n";
+		// for (std::vector<ServerInfo>::iterator it = serverlist.begin() ; it != serverlist.end() ; ++it)
+		// {
+		// 	it->print();
+		// }
+		
 		create_listening_sockets(fd_of_servers, serverlist);
 		start_server(fd_of_servers);
 		// close_sockets(fd_of_servers); also close clients ?
