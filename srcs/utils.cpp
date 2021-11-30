@@ -7,10 +7,12 @@ void print_log(std::string const &msg)
 
 void make_socket_nonblock(int fd)
 {
-    int flags = fcntl(fd, F_GETFL, 0);
-    if (flags == -1)
-        throw(FailToGetFdStatus());
-    if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1)
+    // int flags = fcntl(fd, F_GETFL, 0);
+    // if (flags == -1)
+    //     throw(FailToGetFdStatus());
+    // if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1)
+    //     throw(FailToSetFdStatus());
+    if (fcntl(fd, F_SETFL, O_NONBLOCK) == -1)
         throw(FailToSetFdStatus());
 }
 

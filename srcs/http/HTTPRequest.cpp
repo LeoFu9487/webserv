@@ -1,7 +1,7 @@
 #include "../../includes/webserv.hpp"
 
 
-HTTPRequest::HTTPRequest(std::string const &request):_behavior(none),_file_uri("") // throw status_code if error
+HTTPRequest::HTTPRequest(std::string const &request):_behavior(none),_file_uri(""), _content_length(""), _content_type(""), _boundary(""), _accept("") // throw status_code if error
 {
 	std::stringstream	ss(request);
 
@@ -11,6 +11,57 @@ HTTPRequest::HTTPRequest(std::string const &request):_behavior(none),_file_uri("
 		throw(BadRequest);
 	if (!(ss >> _HTTP_version))
 		throw(BadRequest);
+	
+	if (_method == "POST")
+	{
+		std::string tmp;
+		while (ss >> tmp)
+		{
+			if (tmp == "Content-Length:")
+			{
+				if (_content_length == "")
+					ss >> _content_length;
+				else
+					throw(BadRequest);
+			}
+			else if (tmp == "Content-Type:")
+			{
+				if (_content_type == "")
+				{
+					ss >> _content_type;
+					if (_content_type[_content_type.size() - 1] == ';')
+						_content_type.erase(_content_type.size() - 1);
+					ss >> tmp;
+					if (tmp.substr(0, 10) == "boundary=")
+						_boundary = tmp.substr(10);
+				}
+				else
+					throw(BadRequest);
+			}
+			else if (tmp == "Accept:")
+			{
+				if (_accept == "")
+					ss >> _accept;
+				else
+					throw(BadRequest);
+			}
+			else if (tmp == _boundary)
+				break ;
+		}
+		
+		if (_content_length == "")
+			throw(LengthRequired);
+		
+		// todo : not sure
+		if (_boundary == "" || _content_type == "" || _accept == "")
+			throw(BadRequest);
+
+		// todo : if length too long or type not ok or accept not ok ... ?
+
+		// todo : now read body
+
+	}
+
 }
 
 static bool find_file(HTTPRequest &request, Location const &location, std::string path)
@@ -135,9 +186,46 @@ std::string const &HTTPRequest::get_HTTP_versoin() const
 	return _HTTP_version;
 }
 
+std::string const &HTTPRequest::get_content_length() const
+{
+	return _content_length;
+}
+
+std::string const &HTTPRequest::get_content_type() const
+{
+	return _content_type;
+}
+
+std::string const &HTTPRequest::get_boundary() const
+{
+	return _boundary;
+}
+
+std::string const &HTTPRequest::get_accept() const
+{
+	return _accept;
+}
+
+std::vector<std::string> const &HTTPRequest::get_content() const
+{
+	return _content;
+}
+
 void	HTTPRequest::print() const
 {
 	std::cerr	<< "HTTP Request attributes :\n"
 				<< "file_uri : " << get_file_uri() <<"\n"
-				<< "behavior : " << get_behavior() << "\n\n";
+				<< "behavior : " << get_behavior() << "\n"
+				<< "method : " << get_method() << "\n"
+				<< "HTTP version : " << get_HTTP_versoin() <<"\n"
+				<< "Content Length : " << get_content_length() <<"\n"
+				<< "Content Type : " << get_content_type() <<"\n"
+				<< "Boundary : " << get_boundary() <<"\n"
+				<< "Accept : " << get_accept() <<"\n"
+				<< "Content : ";
+				for (size_t i = 0 ; i < get_content().size() ; ++i)
+				{
+					std::cerr << i <<" :\n" << get_content()[i] <<"\n";
+				}
+				std::cerr <<"\n";
 }
