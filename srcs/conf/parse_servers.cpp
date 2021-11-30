@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_servers.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
+/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/30 11:03:29 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/30 15:11:43 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 
 void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 {
-	(void)result;
 	if (!conf_file_path)
 		throw(InvalidConfFilePath());
 	std::ifstream	file;
@@ -43,7 +42,7 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 			{
 				if (nb_tokens(line.c_str()) != 2 || line.compare(line.size() - 1, 1, "{"))
 					throw(ConfFileParseError("invalid server header"));
-				new_server(str, i);
+				new_server(result, str, i);
 			}
 		}
 		i++;
@@ -54,7 +53,7 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 ** Parsing and filling server info
 */
 
-void new_server(std::string &str, int &pos)
+void new_server(std::vector<ServerInfo> &result, std::string &str, int &pos)
 {
 	ServerInfo	new_server;
 	int	ct = pos + 1;
@@ -83,7 +82,9 @@ void new_server(std::string &str, int &pos)
 			throw(ConfFileParseError("wrong input in server"));
 		ct++;
 	}
-	new_server.print();
+
+	result.push_back(new_server);
+	// new_server.print();
 }
 
 /*
@@ -122,7 +123,8 @@ void new_location(ServerInfo &n_server, std::string &str, int &ct)
 		}
 		ct++;
 	}
-	n_location.print();
+	n_server.add_location(n_location);
+	// n_location.print();
 }
 
 /*
