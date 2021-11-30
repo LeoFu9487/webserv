@@ -6,18 +6,19 @@ HTTPRequest::HTTPRequest(std::string const &request):_behavior(none),_file_uri("
 	std::stringstream	ss(request);
 
 	if (!(ss >> _method))
-		throw(MethodNotAllowed);
+		throw(BadRequest);
 	if (!(ss >> _path))
-		throw(NotFound);
+		throw(BadRequest);
 	if (!(ss >> _HTTP_version))
-		throw(HTTPVersionNotSupported);
+		throw(BadRequest);
 }
 
 static bool find_file(HTTPRequest &request, Location const &location, std::string path)
 {
 	std::string uri = location.get_uri();
+	
 	if (path.size() < uri.size() || path.substr(0, uri.size()) != uri ||
-	(path.size() > uri.size() && path[uri.size()] != '/') )
+	(path.size() > uri.size() && path[uri.size()] != '/' && path[uri.size() - 1] != '/') )
 		return false;
 
 	// redirect
@@ -28,7 +29,6 @@ static bool find_file(HTTPRequest &request, Location const &location, std::strin
 		request.set_behavior(redirect);
 		return true;
 	}
-
 
 	std::string	root = location.get_root();
 	if (root == "" || !directory_exist(root))
@@ -51,7 +51,7 @@ static bool find_file(HTTPRequest &request, Location const &location, std::strin
 				index_path = root + "/" + index_path;
 			else
 				index_path = root + index_path;
-			if (file_exist(index_path))
+			if (uri_exist(index_path))
 			{
 				request.set_file_uri(index_path);
 				request.set_behavior(existed_file);
@@ -60,18 +60,23 @@ static bool find_file(HTTPRequest &request, Location const &location, std::strin
 		}
 	}
 	
+	if (uri[uri.size() - 1] == '/' && root[root.size() - 1] != '/')
+		root += "/";
 	path.replace(0, uri.size(), root);
-	if (file_exist(path))
+
+	if (uri_exist(path))
 	{
 		request.set_file_uri(path);
 		request.set_behavior(existed_file);
 		return true;
 	}
+
 	return false;
 }
 
 void	HTTPRequest::check_request(ServerInfo const &server)
 {
+	// check version
 	if (_HTTP_version != "HTTP/1.0" && _HTTP_version != "HTTP/1.1")
 		throw(HTTPVersionNotSupported);
 	
@@ -80,11 +85,15 @@ void	HTTPRequest::check_request(ServerInfo const &server)
 
 	for (it = server.get_location().begin() ; it != server.get_location().end() ; ++it)
 		if (find_file(*this, *it, _path))
+		{
+			// std::cerr << it->get_uri() << std::endl << std::endl;
 			break ;
-	
-	if (it == server.get_location().end())
-		throw(NotFound);
+		}
 
+	if (it == server.get_location().end())
+	{
+		throw(NotFound);
+	}
 	
 	// check method
 	
@@ -111,9 +120,19 @@ Location_behavior	HTTPRequest::get_behavior() const
 	return _behavior;
 }
 
+std::string const &HTTPRequest::get_method() const
+{
+	return _method;
+}
+
 std::string const &HTTPRequest::get_file_uri() const
 {
 	return _file_uri;
+}
+
+std::string const &HTTPRequest::get_HTTP_versoin() const
+{
+	return _HTTP_version;
 }
 
 void	HTTPRequest::print() const

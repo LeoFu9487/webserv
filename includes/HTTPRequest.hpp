@@ -43,6 +43,8 @@ public:
 	
 	std::string const &get_file_uri() const;
 	Location_behavior	get_behavior() const;
+	std::string const &get_method() const;
+	std::string const &get_HTTP_versoin() const;
 
 	void	print() const;
 };

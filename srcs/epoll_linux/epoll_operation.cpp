@@ -48,9 +48,6 @@ void	accept_new_client(int epoll_fd, int server_fd, std::map<int, ClientInfo> &f
 	print_log("One client connected successfully");
 	make_socket_nonblock(client_fd); // is it correct ?
 	add_read_event_in_epoll(epoll_fd, client_fd);
-	/*
-	todo : need to fill new client information
-	*/
 	fd_of_clients.insert(std::make_pair(client_fd, ClientInfo((*(fd_of_servers[server_fd])))));
 }
 

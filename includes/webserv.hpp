@@ -39,3 +39,4 @@
 #include "http.hpp"
 #include "HTTPRequest.hpp"
 #include "HTTPResponse.hpp"
+#include "Autoindex.hpp"
