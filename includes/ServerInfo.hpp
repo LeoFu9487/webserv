@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerInfo.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
+/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:26 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 18:50:27 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/30 15:08:34 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ class ServerInfo
 		ServerInfo(const ServerInfo &copy);
 		ServerInfo &operator=(const ServerInfo &copy);
 		~ServerInfo();
+
+		void						add_location(Location &);
 
 		/*
 		** Server getters

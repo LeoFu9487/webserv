@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conf.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
+/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:31 by xli               #+#    #+#             */
-/*   Updated: 2021/11/27 20:38:04 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/30 14:48:00 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,6 @@ std::string get_line(std::string str, int n);
 int			nb_tokens(const char *);
 bool		is_valid_attribute(std::string str, const char *valid_names[]);
 bool		is_skippable(std::string str, int pos);
-void		new_server(std::string &str, int &pos);
+void		new_server(std::vector<ServerInfo>&, std::string &str, int &pos);
 void		new_location(ServerInfo &n_server, std::string &str, int &ct);
 void		parse_servers(std::vector<ServerInfo> &result, char *conf_file_path);

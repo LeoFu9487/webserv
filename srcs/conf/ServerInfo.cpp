@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerInfo.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
+/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/30 11:02:57 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/30 15:13:17 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ std::map<std::string, std::string> const &Location::get_cgi() const { return _cg
 /*
 ** --------------- SETTER ---------------
 */
+
+
 
 void Location::set_location(int index, const int &pos, const std::string &str)
 {
@@ -204,7 +206,10 @@ ServerInfo::ServerInfo(const ServerInfo &copy)
 	_IP(copy._IP),
 	_error_pages(copy._error_pages),
 	_client_body_size(copy._client_body_size),
-	_location(copy._location) {}
+	_location(copy._location) 
+	{
+		// std::cerr << copy._location.size() << " " << _location.size() <<"\n";
+	}
 
 ServerInfo &ServerInfo::operator=(const ServerInfo &copy)
 {
@@ -290,6 +295,11 @@ void ServerInfo::set_client_body_size(const char *s)
 
 std::vector<Location> ServerInfo::set_server_location() { return _location; }
 
+void ServerInfo::add_location(Location &location)
+{
+	_location.push_back(location);
+}
+
 void ServerInfo::print() const
 {
 	std::cerr << "----------ServerInfo attributes----------" << std::endl;
@@ -297,4 +307,12 @@ void ServerInfo::print() const
 	std::cerr << "_server_name = " << _server_name << std::endl;
 	std::cerr << "_error_pages = " << _error_pages << std::endl;
 	std::cerr << "_client_body_size = " << _client_body_size << std::endl;
+	std::cerr << "_location : " << std::endl;
+	for (size_t i = 0 ; i < _location.size() ; ++i)
+	{
+		std::cerr << std::endl;
+		_location[i].print();
+		std::cerr << std::endl;
+	}
+	std::cerr << std::endl;
 }
