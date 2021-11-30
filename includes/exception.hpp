@@ -148,6 +148,15 @@ class FailToControlKqueue : public std::exception
 		}
 };
 
+class FailToWaitKqueue : public std::exception
+{
+	public:
+		char const	*what() const throw()
+		{
+			return "Fail To Wait Kqueue";
+		}
+};
+
 /*
 HTTP
 */
