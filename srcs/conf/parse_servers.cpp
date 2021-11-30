@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 15:57:10 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/30 11:03:29 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,22 +31,39 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 	while (file.get(c))
 		str.push_back(c);
 	file.close();
-	//std::cout << str << std::endl;
 	if (valid_bracket(str) == false)
 		throw(ConfFileParseError("invalid numbers bracket"));
-	if (!str.compare(0, 8, "server {"))
+	int i = 0;
+	while (i < nb_lines(str))
 	{
-		//std::cout << "IN1";
-		ServerInfo	new_server;
-		std::string	line;
-		line = get_line(str, 0);
-		if (nb_tokens(line.c_str()) != 2)
-			throw(ConfFileParseError("invalid server header"));
-		int	ct = 1;
-		while (ct < nb_lines(str))
+		if (!is_skippable(str, i))
 		{
-			//std::cout << "IN2";
-			line = get_line(str, ct);
+			std::string	line = get_line(str, i);
+			if (!line.compare(0, 8, "server {"))
+			{
+				if (nb_tokens(line.c_str()) != 2 || line.compare(line.size() - 1, 1, "{"))
+					throw(ConfFileParseError("invalid server header"));
+				new_server(str, i);
+			}
+		}
+		i++;
+	}
+}
+
+/*
+** Parsing and filling server info
+*/
+
+void new_server(std::string &str, int &pos)
+{
+	ServerInfo	new_server;
+	int	ct = pos + 1;
+	while (ct < closing_bracket(str, pos))
+	{
+		std::string line = get_line(str, ct);
+		std::string attri = line.substr(0, line.find(" "));
+		if (is_valid_attribute(attri, server_attributes) || is_skippable(str, ct))
+		{
 			if (!line.compare(0, 7, "listen "))
 				new_server.set_server(PORT, 7, line);
 			else if (!line.compare(0, 12, "server_name "))
@@ -57,15 +74,16 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 				new_server.set_server(SIZE, 9, line);
 			else if (!line.compare(0, 9, "location "))
 			{
-				if (nb_tokens(line.c_str()) != 3)
+				if (nb_tokens(line.c_str()) != 3 || line.compare(line.size() - 1, 1, "{"))
 					throw(ConfFileParseError("invalid location header"));
 				new_location(new_server, str, ct);
 			}
-			// else
-			// 	throw(ConfFileParseError("wrong input in server"));
-			ct++;
 		}
+		else
+			throw(ConfFileParseError("wrong input in server"));
+		ct++;
 	}
+	new_server.print();
 }
 
 /*
@@ -75,35 +93,36 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 void new_location(ServerInfo &n_server, std::string &str, int &ct)
 {
 	Location	n_location(n_server.get_port());
-	while (ct < nb_lines(str))
+	while (get_line(str, ct) != "}")
 	{
-		std::string	line;
-		line = get_line(str, ct);
-		// if (to_skip(line, ct) == true)
-		// 	ct++;
-		// std::cout << "line = " << line << std::endl;
-		if (!line.compare(0, 9, "location "))
+		if (!is_skippable(str, ct))
 		{
-			if (!line.compare(line.size() - 1, 1, "{"))
+			std::string	line = get_line(str, ct);
+			if (!line.compare(0, 9, "location "))
+			{
 				line.erase(line.size() - 1, 1);
-			n_location.set_location(URI, 9, line);
+				n_location.set_location(URI, 9, line);
+			}
+			else if (!line.compare(0, 10, "autoindex "))
+				n_location.set_location(AUTOINDEX, 10, line);
+			else if (!line.compare(0, 6, "index "))
+				n_location.set_location(INDEX, 6, line);
+			else if (!line.compare(0, 5, "root "))
+				n_location.set_location(ROOT, 5, line);
+			else if (!line.compare(0, 9, "redirect "))
+				n_location.set_location(REDIRECT, 9, line);
+			else if (!line.compare(0, 13, "allow_method "))
+				n_location.set_location(METHOD, 13, line);
+			else if (!line.compare(0, 12, "upload_path "))
+				n_location.set_location(UPLOADPATH, 12, line);
+			else if (!line.compare(0, 4, "cgi "))
+				n_location.set_location(CGI, 4, line);
+			else
+				throw(ConfFileParseError("wrong input in location"));
 		}
-		else if (!line.compare(0, 10, "autoindex "))
-			n_location.set_location(AUTOINDEX, 10, line);
-		else if (!line.compare(0, 6, "index "))
-			n_location.set_location(INDEX, 6, line);
-		else if (!line.compare(0, 5, "root "))
-			n_location.set_location(ROOT, 5, line);
-		else if (!line.compare(0, 13, "allow_method "))
-			n_location.set_location(METHOD, 13, line);
-		else if (!line.compare(0, 12, "upload_path "))
-			n_location.set_location(UPLOADPATH, 12, line);
-		else if (!line.compare(0, 4, "cgi "))
-			n_location.set_location(CGI, 4, line);
-		// else
-		// 	throw(ConfFileParseError("wrong input in location"));
 		ct++;
 	}
+	n_location.print();
 }
 
 /*
@@ -124,7 +143,6 @@ bool valid_bracket(std::string str)
 			if (!bracket.empty() && bracket.top() == '{')
 				bracket.pop();
 		}
-
 	}
 	if (bracket.empty())
 		return true;
@@ -132,12 +150,29 @@ bool valid_bracket(std::string str)
 }
 
 /*
-**	listen 8080
-**	server_name localhost
-**	root www
-**	error_page 404.html
-**	max_size 10m
+** Get the line of the matching closing bracket
 */
+
+int closing_bracket(std::string str, int pos)
+{
+	int	line;
+	line = pos + 1;
+	int	ct = 0;
+	for (int i = pos; i < nb_lines(str); i++)
+	{
+		if (get_line(str, i).find("{") != std::string::npos)
+
+			++ct;
+		else if (get_line(str, i).find("}") != std::string::npos)
+		{
+			--ct;
+			if (ct == 0)
+				return (line);
+		}
+		++line;
+	}
+	return (-1);
+}
 
 /*
 ** Get total number of lines of the string
@@ -209,13 +244,31 @@ int nb_tokens(const char *str)
 }
 
 /*
+** Check if the attribute is valid
+*/
+
+bool is_valid_attribute(std::string str, const char *valid_names[])
+{
+	size_t i;
+
+	i = 0;
+	while (valid_names[i])
+	{
+		if (str == valid_names[i])
+			return true;
+		++i;
+	}
+	return false;
+}
+
+/*
 ** Check if the line is skippable
 */
 
-bool to_skip(std::string str, int ct)
+bool is_skippable(std::string str, int pos)
 {
 	std::string line;
 
-	line = get_line(str, ct);
-	return (/*splitWhitespace(l).size() == 0 || */line.size() == 0 || line[0] == '#');
+	line = get_line(str, pos);
+	return (line.size() == 0 || line[0] == '#' || line[0] == '}');
 }

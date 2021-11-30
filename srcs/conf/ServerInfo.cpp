@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerInfo.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
+/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 17:29:14 by yfu              ###   ########lyon.fr   */
+/*   Updated: 2021/11/30 11:02:57 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@
 
 Location::Location(int p)
 :	_port(p),
-	_autoindex(0)
+	_autoindex(0),
+	_index(""),
+	_root(""),
+	_redirect("")
 {
 	const char *method_list[] = { "POST", "GET", "HEAD", "DELETE"};
 	_allow_method.insert(_allow_method.begin(), method_list, method_list + 4);
@@ -27,9 +30,13 @@ Location::Location(int p)
 Location::Location(const Location &copy)
 :	_port(copy._port),
 	_autoindex(copy._autoindex),
+	_uri(copy._uri),
 	_index(copy._index),
 	_root(copy._root),
-	_allow_method(copy._allow_method) {}
+	_redirect(copy._redirect),
+	_allow_method(copy._allow_method),
+	_upload_path(copy._upload_path),
+	_cgi(copy._cgi) {}
 
 Location &Location::operator=(const Location &copy)
 {
@@ -69,17 +76,14 @@ void Location::set_location(int index, const int &pos, const std::string &str)
 {
 	typedef void (Location::*location_funcs)(const char *);
 	location_funcs	funcs[] = {&Location::set_uri, &Location::set_autoindex,
-		&Location::set_index, &Location::set_root, &Location::set_allow_method,
-		&Location::set_upload_path, &Location::set_cgi};
+		&Location::set_index, &Location::set_root, &Location::set_redirect,
+		&Location::set_allow_method, &Location::set_upload_path,
+		&Location::set_cgi};
 
-	//tmp = str[pos]?
-	// std::cout << "str = " << str << std::endl;
 	const char *tmp = str.c_str() + pos;
-	// std::cout << "tmp = " << tmp << std::endl;
 	int i = 0;
 	while (isspace(tmp[i]))
 		i++;
-	//eg. for listen 8080, tmp + i = 8080
 	(this->*funcs[index])(tmp + i);
 }
 
@@ -120,20 +124,22 @@ void Location::set_root(const char *r)
 	_root = tmp;
 }
 
+void Location::set_redirect(const char *r)
+{
+	if (nb_tokens(r) != 1)
+		throw(ConfFileParseError("put only one redirect path"));
+	std::string	tmp = r;
+	tmp.erase(std::remove_if(tmp.begin(), tmp.end(), isspace), tmp.end());
+	_redirect = tmp;
+}
+
 void Location::set_allow_method(const char *m)
 {
+	_allow_method.clear();
 	std::stringstream	str(m);
-	#ifndef __linux__
-	std::istream_iterator<std::string>	begin(str);
-	std::istream_iterator<std::string>	end;
-	std::vector<std::string>	_allow_method(begin, end);
-	#else
 	std::string	token;
 	while (str >> token)
-	{
 		_allow_method.push_back(token);
-	}
-	#endif
 	const char *method_check[] = { "POST", "GET", "HEAD", "DELETE"};
 	for (size_t i = 0; i < _allow_method.size(); i++)
 	{
@@ -145,8 +151,6 @@ void Location::set_allow_method(const char *m)
 				throw(ConfFileParseError("put only allowed methods"));
 		}
 	}
-	// for (std::vector<std::string>::const_iterator it = _allow_method.begin(); it != _allow_method.end(); ++it)
-	// 	std::cerr << "_allow_method = " << *it << std::endl;
 }
 
 void Location::set_upload_path(const char *u)
@@ -161,37 +165,28 @@ void Location::set_upload_path(const char *u)
 void Location::set_cgi(const char *c)
 {
 	std::stringstream	str(c);
-	#ifndef __linux
-	std::istream_iterator<std::string>	begin(str);
-	std::istream_iterator<std::string>	end;
-	std::vector<std::string>	tmp(begin, end);
-	#else
 	std::vector<std::string> tmp;
 	std::string	token;
 	while (str >> token)
-	{
 		tmp.push_back(token);
-	}
-	#endif
-	// for (std::vector<std::string>::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
-	// 	std::cout << "tmp = " << *it << std::endl;
 	if (tmp.size() != 2)
 		throw(ConfFileParseError("wrong input for cgi"));
 	_cgi.insert(std::pair<std::string, std::string>(tmp[0], tmp[1]));
-	// for (std::map<std::string, std::string>::const_iterator it = _cgi.begin(); it != _cgi.end(); ++it)
-	// 	std::cout << it->first << " => " << it->second << std::endl;
 }
 
 void Location::print() const
 {
 	std::cerr << "----------Location attributes----------" << std::endl;
-	std::cerr << "_uri = " << _uri << std::endl;
 	std::cerr << "_port = " << _port << std::endl;
 	std::cerr << "_autoindex = " << _autoindex << std::endl;
+	std::cerr << "_uri = " << _uri << std::endl;
 	std::cerr << "_index = " << _index << std::endl;
 	std::cerr << "_root = " << _root << std::endl;
+	std::cerr << "_redirect = " << _redirect << std::endl;
 	for (std::vector<std::string>::const_iterator it = _allow_method.begin(); it != _allow_method.end(); ++it)
 		std::cerr << "_allow_method = " << *it << std::endl;
+	for (std::map<std::string, std::string>::const_iterator it = _cgi.begin(); it != _cgi.end(); ++it)
+		std::cerr << "_cgi = " << it->first << " => " << it->second << std::endl;
 }
 
 /*
@@ -208,7 +203,8 @@ ServerInfo::ServerInfo(const ServerInfo &copy)
 	_server_name(copy._server_name),
 	_IP(copy._IP),
 	_error_pages(copy._error_pages),
-	_client_body_size(copy._client_body_size) {}
+	_client_body_size(copy._client_body_size),
+	_location(copy._location) {}
 
 ServerInfo &ServerInfo::operator=(const ServerInfo &copy)
 {
@@ -245,14 +241,10 @@ void ServerInfo::set_server(int index, const int &pos, const std::string &str)
 	server_func	funcs[] = {&ServerInfo::set_port, &ServerInfo::set_name,
 		&ServerInfo::set_error, &ServerInfo::set_client_body_size};
 
-	//tmp = str[pos]?
-	// std::cout << "str = " << str << std::endl;
 	const char *tmp = str.c_str() + pos;
-	// std::cout << "tmp = " << tmp << std::endl;
 	int i = 0;
 	while (isspace(tmp[i]))
 		i++;
-	//eg. for listen 8080, tmp + i = 8080
 	(this->*funcs[index])(tmp + i);
 }
 
@@ -265,10 +257,9 @@ void ServerInfo::set_port(const char *p)
 	for (size_t i = 0; i < tmp.size(); i++)
 		if (tmp[i] < 48 || tmp[i] > 57)
 			throw(ConfFileParseError("put only digits for port"));
-	_port = atoi(p);
+	_port = atoi(tmp.c_str());
 }
 
-//server_name one or multiple(from string to vector?)
 void ServerInfo::set_name(const char *n)
 {
 	if (nb_tokens(n) != 1)
@@ -285,7 +276,6 @@ void ServerInfo::set_error(const char *e)
 	_error_pages = e;
 }
 
-//max_size accept 10m or just 10?
 void ServerInfo::set_client_body_size(const char *s)
 {
 	if (nb_tokens(s) != 1)
@@ -295,10 +285,10 @@ void ServerInfo::set_client_body_size(const char *s)
 	for (size_t i = 0; i < tmp.size(); i++)
 		if (tmp[i] < 48 || tmp[i] > 57)
 			throw(ConfFileParseError("put only digits for max client body size"));
-	_port = atoi(s);
+	_client_body_size = atoi(tmp.c_str());
 }
 
-std::vector<Location> *ServerInfo::set_server_location() { return &_location; }
+std::vector<Location> ServerInfo::set_server_location() { return _location; }
 
 void ServerInfo::print() const
 {
@@ -308,4 +298,3 @@ void ServerInfo::print() const
 	std::cerr << "_error_pages = " << _error_pages << std::endl;
 	std::cerr << "_client_body_size = " << _client_body_size << std::endl;
 }
-
