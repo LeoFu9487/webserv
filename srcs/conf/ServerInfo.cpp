@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 20:53:55 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/30 11:02:57 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ Location::Location(int p)
 	_root(""),
 	_redirect("")
 {
-	// const char *method_list[] = { "POST", "GET", "HEAD", "DELETE"};
-	// _allow_method.insert(_allow_method.begin(), method_list, method_list + 4);
+	const char *method_list[] = { "POST", "GET", "HEAD", "DELETE"};
+	_allow_method.insert(_allow_method.begin(), method_list, method_list + 4);
 }
 
 Location::Location(const Location &copy)
@@ -80,14 +80,10 @@ void Location::set_location(int index, const int &pos, const std::string &str)
 		&Location::set_allow_method, &Location::set_upload_path,
 		&Location::set_cgi};
 
-	//tmp = str[pos]?
-	// std::cout << "str = " << str << std::endl;
 	const char *tmp = str.c_str() + pos;
-	// std::cout << "tmp = " << tmp << std::endl;
 	int i = 0;
 	while (isspace(tmp[i]))
 		i++;
-	//eg. for listen 8080, tmp + i = 8080
 	(this->*funcs[index])(tmp + i);
 }
 
@@ -139,18 +135,11 @@ void Location::set_redirect(const char *r)
 
 void Location::set_allow_method(const char *m)
 {
+	_allow_method.clear();
 	std::stringstream	str(m);
-	#ifndef __linux__
-	std::istream_iterator<std::string>	begin(str);
-	std::istream_iterator<std::string>	end;
-	std::vector<std::string>	_allow_method(begin, end);
-	#else
 	std::string	token;
 	while (str >> token)
-	{
 		_allow_method.push_back(token);
-	}
-	#endif
 	const char *method_check[] = { "POST", "GET", "HEAD", "DELETE"};
 	for (size_t i = 0; i < _allow_method.size(); i++)
 	{
@@ -162,8 +151,6 @@ void Location::set_allow_method(const char *m)
 				throw(ConfFileParseError("put only allowed methods"));
 		}
 	}
-	// for (std::vector<std::string>::const_iterator it = _allow_method.begin(); it != _allow_method.end(); ++it)
-	// 	std::cerr << "_allow_method = " << *it << std::endl;
 }
 
 void Location::set_upload_path(const char *u)
@@ -178,18 +165,10 @@ void Location::set_upload_path(const char *u)
 void Location::set_cgi(const char *c)
 {
 	std::stringstream	str(c);
-	#ifndef __linux
-	std::istream_iterator<std::string>	begin(str);
-	std::istream_iterator<std::string>	end;
-	std::vector<std::string>	tmp(begin, end);
-	#else
 	std::vector<std::string> tmp;
 	std::string	token;
 	while (str >> token)
-	{
 		tmp.push_back(token);
-	}
-	#endif
 	if (tmp.size() != 2)
 		throw(ConfFileParseError("wrong input for cgi"));
 	_cgi.insert(std::pair<std::string, std::string>(tmp[0], tmp[1]));
@@ -262,12 +241,10 @@ void ServerInfo::set_server(int index, const int &pos, const std::string &str)
 	server_func	funcs[] = {&ServerInfo::set_port, &ServerInfo::set_name,
 		&ServerInfo::set_error, &ServerInfo::set_client_body_size};
 
-	// tmp = str[pos]
 	const char *tmp = str.c_str() + pos;
 	int i = 0;
 	while (isspace(tmp[i]))
 		i++;
-	//eg. for listen 8080, tmp + i = 8080
 	(this->*funcs[index])(tmp + i);
 }
 
@@ -283,7 +260,6 @@ void ServerInfo::set_port(const char *p)
 	_port = atoi(tmp.c_str());
 }
 
-//server_name one or multiple(from string to vector?)
 void ServerInfo::set_name(const char *n)
 {
 	if (nb_tokens(n) != 1)
@@ -300,7 +276,6 @@ void ServerInfo::set_error(const char *e)
 	_error_pages = e;
 }
 
-//max_size accept 10m or just 10?
 void ServerInfo::set_client_body_size(const char *s)
 {
 	if (nb_tokens(s) != 1)
@@ -323,4 +298,3 @@ void ServerInfo::print() const
 	std::cerr << "_error_pages = " << _error_pages << std::endl;
 	std::cerr << "_client_body_size = " << _client_body_size << std::endl;
 }
-

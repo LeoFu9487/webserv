@@ -6,7 +6,7 @@
 /*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 13:13:08 by xli               #+#    #+#             */
-/*   Updated: 2021/11/27 20:50:22 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/11/30 11:03:29 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,15 @@ void parse_servers(std::vector<ServerInfo> &result, char *conf_file_path)
 	int i = 0;
 	while (i < nb_lines(str))
 	{
-		std::string	line = get_line(str, i);
-		if (!line.compare(0, 8, "server {"))
+		if (!is_skippable(str, i))
 		{
-			if (nb_tokens(line.c_str()) != 2 || line.compare(line.size() - 1, 1, "{"))
-				throw(ConfFileParseError("invalid server header"));
-			new_server(str, i);
+			std::string	line = get_line(str, i);
+			if (!line.compare(0, 8, "server {"))
+			{
+				if (nb_tokens(line.c_str()) != 2 || line.compare(line.size() - 1, 1, "{"))
+					throw(ConfFileParseError("invalid server header"));
+				new_server(str, i);
+			}
 		}
 		i++;
 	}
@@ -80,7 +83,7 @@ void new_server(std::string &str, int &pos)
 			throw(ConfFileParseError("wrong input in server"));
 		ct++;
 	}
-	// new_server.print();
+	new_server.print();
 }
 
 /*
@@ -92,31 +95,34 @@ void new_location(ServerInfo &n_server, std::string &str, int &ct)
 	Location	n_location(n_server.get_port());
 	while (get_line(str, ct) != "}")
 	{
-		std::string	line = get_line(str, ct);
-		if (!line.compare(0, 9, "location "))
+		if (!is_skippable(str, ct))
 		{
-			line.erase(line.size() - 1, 1);
-			n_location.set_location(URI, 9, line);
+			std::string	line = get_line(str, ct);
+			if (!line.compare(0, 9, "location "))
+			{
+				line.erase(line.size() - 1, 1);
+				n_location.set_location(URI, 9, line);
+			}
+			else if (!line.compare(0, 10, "autoindex "))
+				n_location.set_location(AUTOINDEX, 10, line);
+			else if (!line.compare(0, 6, "index "))
+				n_location.set_location(INDEX, 6, line);
+			else if (!line.compare(0, 5, "root "))
+				n_location.set_location(ROOT, 5, line);
+			else if (!line.compare(0, 9, "redirect "))
+				n_location.set_location(REDIRECT, 9, line);
+			else if (!line.compare(0, 13, "allow_method "))
+				n_location.set_location(METHOD, 13, line);
+			else if (!line.compare(0, 12, "upload_path "))
+				n_location.set_location(UPLOADPATH, 12, line);
+			else if (!line.compare(0, 4, "cgi "))
+				n_location.set_location(CGI, 4, line);
+			else
+				throw(ConfFileParseError("wrong input in location"));
 		}
-		else if (!line.compare(0, 10, "autoindex "))
-			n_location.set_location(AUTOINDEX, 10, line);
-		else if (!line.compare(0, 6, "index "))
-			n_location.set_location(INDEX, 6, line);
-		else if (!line.compare(0, 5, "root "))
-			n_location.set_location(ROOT, 5, line);
-		else if (!line.compare(0, 9, "redirect "))
-			n_location.set_location(REDIRECT, 9, line);
-		else if (!line.compare(0, 13, "allow_method "))
-			n_location.set_location(METHOD, 13, line);
-		else if (!line.compare(0, 12, "upload_path "))
-			n_location.set_location(UPLOADPATH, 12, line);
-		else if (!line.compare(0, 4, "cgi "))
-			n_location.set_location(CGI, 4, line);
-		else
-		 	throw(ConfFileParseError("wrong input in location"));
 		ct++;
 	}
-	// n_location.print();
+	n_location.print();
 }
 
 /*
