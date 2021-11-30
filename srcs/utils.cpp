@@ -63,16 +63,16 @@ std::string file_or_directory(std::string const &uri)
     return directory_exist(uri) ? "Directory" : "File";
 }
 
-std::string std::to_string(int n)
+std::string ft::to_string(int n)
 {
-    ostringstream convert;
+    std::ostringstream convert;
     convert << n;
     return convert.str();
 }
 
-std::string std::to_string(size_t n)
+std::string ft::to_string(size_t n)
 {
-    ostringstream convert;
+    std::ostringstream convert;
     convert << n;
     return convert.str();
 }

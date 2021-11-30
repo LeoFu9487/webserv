@@ -103,11 +103,11 @@ std::string HTTPResponse::get_default_error_page(status_code error_code)
 	// todo
 	std::string msg; // write the content of html file
 
-	msg += std::to_string(error_code) + " " + _status_line[error_code] + "\r\n";
+	msg += ft::to_string(error_code) + " " + _status_line[error_code] + "\r\n";
 	
 	std::string file;
-	file = "HTTP/1.1 " + std::to_string(error_code) + " " + _status_line[error_code] + "\r\n";
-	file += "Content-Type: text/html\r\nContent-Length: " + std::to_string(msg.size()) + "\r\n\n" + msg;
+	file = "HTTP/1.1 " + ft::to_string(error_code) + " " + _status_line[error_code] + "\r\n";
+	file += "Content-Type: text/html\r\nContent-Length: " + ft::to_string(msg.size()) + "\r\n\n" + msg;
 
 	return file;
 }
@@ -132,8 +132,8 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 			else
 				set_status_code(OK);;
 
-			_msg = "HTTP/" + get_HTTP_version() + " " + std::to_string(get_status_code()) + " " + _status_line[get_status_code()] + "\r\n";
-			_msg += "Content-Type: " + file_type_iterator->second + "\r\nContent-Length:" + std::to_string(content.size()) + "\r\n\n" + content;
+			_msg = "HTTP/" + get_HTTP_version() + " " + ft::to_string(get_status_code()) + " " + _status_line[get_status_code()] + "\r\n";
+			_msg += "Content-Type: " + file_type_iterator->second + "\r\nContent-Length:" + ft::to_string(content.size()) + "\r\n\n" + content;
 		}
 		else if (method == "POST")
 		{
@@ -152,7 +152,7 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 		// source : https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
 		set_status_code(MovedPermanently);
 		
-		_msg = "HTTP/" + get_HTTP_version() + " " + std::to_string(get_status_code()) + " " + _status_line[get_status_code()] + "\r\n";
+		_msg = "HTTP/" + get_HTTP_version() + " " + ft::to_string(get_status_code()) + " " + _status_line[get_status_code()] + "\r\n";
 		_msg += "Location: " + get_file_uri();
 	}
 	else if (behavior == autoindex)
@@ -162,8 +162,8 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 		Autoindex file(get_file_uri());
 		
 		set_status_code(OK);
-		_msg = "HTTP/" + get_HTTP_version() + " " + std::to_string(get_status_code()) + " " + _status_line[get_status_code()] + "\r\n";
-		_msg += "Content-Type: text/html\r\nContent-Length:" + std::to_string(file.get_html().size()) + "\r\n\n" + file.get_html();
+		_msg = "HTTP/" + get_HTTP_version() + " " + ft::to_string(get_status_code()) + " " + _status_line[get_status_code()] + "\r\n";
+		_msg += "Content-Type: text/html\r\nContent-Length:" + ft::to_string(file.get_html().size()) + "\r\n\n" + file.get_html();
 
 	}
 	else
@@ -176,7 +176,7 @@ void HTTPResponse::send_error_page(int fd, std::string const &error_pages_root, 
 {
 	try
 	{
-		HTTPResponse response("1.1", "GET", error_pages_root + "/" + std::to_string(error_code) + ".html", existed_file, error_code);
+		HTTPResponse response("1.1", "GET", error_pages_root + "/" + ft::to_string(error_code) + ".html", existed_file, error_code);
 		write(fd, response.get_msg().c_str(), response.get_msg().size());
 		// std::cerr << response.get_msg() << std::endl;
 	}

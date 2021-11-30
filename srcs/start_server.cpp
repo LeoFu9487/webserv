@@ -41,4 +41,37 @@ void	start_server(std::map<int, ServerInfo *> &fd_of_servers)
 
 #else
 
+void	start_server(std::map<int, ServerInfo *> &fd_of_servers)
+{
+	int	kqueue_fd = create_kqueue(fd_of_servers);
+	struct kevent	eventlist[MAX_EVENTS];
+	std::map<int, ClientInfo> fd_of_clients;
+
+	for (;;)
+	{
+		int event_amount = kevent(kqueue_fd, NULL, 0, eventlist, MAX_EVENTS, NULL);
+		if (event_amount == -1)
+			throw(FailToWaitKqueue());
+		for (int i = 0; i < event_amount; ++i)
+		{
+			if (eventlist[i].flags & EV_EOF)
+				delete_client_from_kqueue(fd_of_clients, eventlist[i].ident);
+			else if (fd_of_servers.find(eventlist[i].ident) != fd_of_servers.end())
+				accept_new_client(kqueue_fd, eventlist[i].ident, fd_of_clients, fd_of_servers);
+			else if (eventlist[i].filter == EVFILT_READ)
+			{
+				std::map<int, ClientInfo>::iterator it = fd_of_clients.find(eventlist[i].ident);
+				if (it == fd_of_clients.end())
+					throw(ClientNotInMap());
+				if (read_request(it) <= 0)
+					delete_client_from_kqueue(fd_of_clients, eventlist[i].ident);
+				else
+					deal_with_request(it);
+			}
+			else
+				delete_client_from_kqueue(fd_of_clients, eventlist[i].ident);
+		}
+	}
+}
+
 #endif

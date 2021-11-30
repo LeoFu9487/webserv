@@ -6,7 +6,7 @@
 /*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:26 by xli               #+#    #+#             */
-/*   Updated: 2021/11/26 17:27:37 by yfu              ###   ########lyon.fr   */
+/*   Updated: 2021/11/30 15:08:34 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ class Location
 		void	set_uri(const char *);
 		void	set_autoindex(const char *);
 		void	set_index(const char *);
+		void	set_redirect(const char *);
 		void	set_allow_method(const char *);
 		void	set_root(const char *);
 		void	set_upload_path(const char *);
@@ -88,6 +89,8 @@ class ServerInfo
 		ServerInfo &operator=(const ServerInfo &copy);
 		~ServerInfo();
 
+		void						add_location(Location &);
+
 		/*
 		** Server getters
 		*/
@@ -99,7 +102,7 @@ class ServerInfo
 		std::vector<Location>		const &get_location() const;
 
 		void						set_server(int index, const int &pos, const std::string &str);
-		std::vector<Location>		*set_server_location();
+		std::vector<Location>		set_server_location();
 
 		void	print() const;
 
