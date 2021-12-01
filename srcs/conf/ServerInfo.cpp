@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerInfo.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
+/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 17:01:04 by xli               #+#    #+#             */
-/*   Updated: 2021/11/30 15:13:17 by yfu              ###   ########lyon.fr   */
+/*   Updated: 2021/12/01 09:02:39 by xli              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ Location::Location(int p)
 	_root(""),
 	_redirect("")
 {
-	const char *method_list[] = { "POST", "GET", "HEAD", "DELETE"};
-	_allow_method.insert(_allow_method.begin(), method_list, method_list + 4);
+	const char *method_list[] = { "POST", "GET", "DELETE"};
+	_allow_method.insert(_allow_method.begin(), method_list, method_list + 3);
 }
 
 Location::Location(const Location &copy)
@@ -142,14 +142,14 @@ void Location::set_allow_method(const char *m)
 	std::string	token;
 	while (str >> token)
 		_allow_method.push_back(token);
-	const char *method_check[] = { "POST", "GET", "HEAD", "DELETE"};
+	const char *method_check[] = { "POST", "GET", "DELETE"};
 	for (size_t i = 0; i < _allow_method.size(); i++)
 	{
-		for (size_t j = 0; j < 4; j++)
+		for (size_t j = 0; j < 3; j++)
 		{
 			if (!strcmp(method_check[j], _allow_method[i].c_str()))
 				break;
-			if (j == 3)
+			if (j == 2)
 				throw(ConfFileParseError("put only allowed methods"));
 		}
 	}
@@ -206,10 +206,7 @@ ServerInfo::ServerInfo(const ServerInfo &copy)
 	_IP(copy._IP),
 	_error_pages(copy._error_pages),
 	_client_body_size(copy._client_body_size),
-	_location(copy._location) 
-	{
-		// std::cerr << copy._location.size() << " " << _location.size() <<"\n";
-	}
+	_location(copy._location) {}
 
 ServerInfo &ServerInfo::operator=(const ServerInfo &copy)
 {
@@ -295,10 +292,7 @@ void ServerInfo::set_client_body_size(const char *s)
 
 std::vector<Location> ServerInfo::set_server_location() { return _location; }
 
-void ServerInfo::add_location(Location &location)
-{
-	_location.push_back(location);
-}
+void ServerInfo::add_location(Location &location) { _location.push_back(location); }
 
 void ServerInfo::print() const
 {
