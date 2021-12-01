@@ -14,7 +14,7 @@ void	deal_with_request(std::map<int, ClientInfo>::iterator it)
 
 	try
 	{
-		// std::cerr << it->second.get_request() << std::endl;
+		// std::cout << it->second.get_request() << std::endl;
 		HTTPRequest	request(it->second.get_request());
 		
 		request.check_request(it->second.get_server());
