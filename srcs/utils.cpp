@@ -40,6 +40,32 @@ bool uri_exist(std::string const &file)
     return true;
 }
 
+bool	bigger_than(std::string const &a, std::string const &b)
+{
+    if (a.size() != b.size())
+        return a.size() > b.size();
+
+    for (size_t i = 0 ; i < a.size() ; ++i)
+        if (a[i] != b[i])
+            return a[i] > b[i];
+
+
+    return false;
+}
+
+bool	is_number(std::string const &num)
+{
+    if (num.size() == 0)
+        return false;
+    if (num[0] == '0')
+        return num.size() == 1;
+    for (size_t i = 0 ; i < num.size() ; ++i)
+        if (!isdigit(num[i]))
+            return false;
+
+    return true;
+}
+
 std::string get_file_type(std::string const &file_uri)
 {
     size_t dot = file_uri.find_last_of(".");
@@ -63,6 +89,80 @@ std::string file_or_directory(std::string const &uri)
     return directory_exist(uri) ? "Directory" : "File";
 }
 
+// static std::string plus_one(std::string number)
+// {
+//     bool plus_one = false;
+//     for (int i = static_cast<int>(number.size() - 1) ; i >= 0 ; --i)
+//     {
+//         if (plus_one)
+//         {
+//             if (number[i] == '9')
+//             {
+//                 plus_one = true;
+//                 number[i] = '1';
+//             }
+//             else if (number[i] == '8')
+//             {
+//                 plus_one = true;
+//                 number[i] = '0';
+//             }
+//             else
+//             {
+//                 number[i] += 2;
+//                 return number;
+//             }
+//         }
+//         else
+//         {
+//             if (number[i] == '9')
+//             {
+//                 plus_one = true;
+//                 number[i] = '0';
+//             }
+//             else
+//             {
+//                 ++number[i];
+//                 return number;
+//             }
+//         }
+//     }
+//     if (plus_one)
+//         number.insert(0, "1");
+//     return number;
+// }
+
+void	change_file_name(std::string &file_name)
+{
+    // todo
+    // std::cerr << file_name <<"\n";
+    // std::string current_suffix = "0";
+    // if (file_name[file_name.size() - 1] == ')')
+    // {
+    //     size_t left_parenthese_index = file_name.size() - 2;
+    //     while (--left_parenthese_index >= 0)
+    //         if (file_name[left_parenthese_index] == '(')
+    //             break ;
+    //     if (left_parenthese_index >= 0)
+    //     {
+    //         std::string number = file_name.substr(left_parenthese_index + 1, file_name.size() - left_parenthese_index - 2);
+    //         if (is_number(number))
+    //         {
+    //             file_name.erase(left_parenthese_index);
+    //             current_suffix = plus_one(number);
+    //         }
+    //     }
+    // }
+    // file_name += "(" + current_suffix + ")";
+    while (uri_exist(file_name))
+    {
+        size_t dot = file_name.find_last_of(".");
+        if (dot == std::string::npos)
+            file_name += "_";
+        else
+            file_name.insert(dot, "_");
+    }
+}
+
 std::string ft::to_string(int n)
 {
     std::ostringstream convert;
@@ -71,6 +171,13 @@ std::string ft::to_string(int n)
 }
 
 std::string ft::to_string(size_t n)
+{
+    std::ostringstream convert;
+    convert << n;
+    return convert.str();
+}
+
+std::string ft::to_string(long long n)
 {
     std::ostringstream convert;
     convert << n;
