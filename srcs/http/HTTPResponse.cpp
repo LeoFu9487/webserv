@@ -210,15 +210,15 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 	{
 		if (method == "GET" || method == "POST")
 		{
-			std::map<std::string, std::string>::iterator file_type_iterator = _content_type.find(get_file_type(file_uri));
-			std::string file_uri = (method == "GET" ? get_file_uri() : get_second_file_uri());
-			if (directory_exist(file_uri)) // want to read a file, but it's a directory
+			std::string real_file_uri = (method == "GET" ? get_file_uri() : get_second_file_uri());
+			std::map<std::string, std::string>::iterator file_type_iterator = _content_type.find(get_file_type(real_file_uri));
+			if (directory_exist(real_file_uri)) // want to read a file, but it's a directory
 				throw(Forbidden);
-			if (!uri_exist(file_uri))
+			if (!uri_exist(real_file_uri))
 				throw(NotFound);
 			if (file_type_iterator == _content_type.end())
 				throw(UnsupportedMediaType);
-			std::string const &content = get_file_content(file_uri);
+			std::string const &content = get_file_content(real_file_uri);
 			
 			if (content.size() == 0)
 				set_status_code(NoContent);
@@ -245,10 +245,10 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 	}
 	else if (behavior == autoindex || behavior == post_autoindex)
 	{
-		std::string file_uri = (method == "GET" ? get_file_uri() : get_second_file_uri());
-		if (!directory_exist(file_uri))
+		std::string real_file_uri = (method == "GET" ? get_file_uri() : get_second_file_uri());
+		if (!directory_exist(real_file_uri))
 			throw(NotFound);
-		Autoindex file(path, file_uri);
+		Autoindex file(path, real_file_uri);
 
 		set_status_code(OK);
 		_msg = "HTTP/" + get_HTTP_version() + " " + ft::to_string(get_status_code()) + " " + _status_line[get_status_code()] + "\r\n";

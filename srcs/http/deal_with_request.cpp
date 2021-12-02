@@ -20,7 +20,4 @@ void	deal_with_request(std::map<int, ClientInfo>::iterator it)
 		print_log("Respond with HTTP status : " + ft::to_string(error_code) + " " + HTTPResponse::_status_line[error_code]);
 	}
 	
-	// std::string hello = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length:15\n\n<img src=\"sun\">";
-	// std::cerr << it->second.get_request() <<"\n";
-	// write(it->first, hello.c_str() , hello.size());
 }
