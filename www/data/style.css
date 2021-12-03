@@ -47,19 +47,31 @@ h2 {
 	text-align: center;
 }
 
-p {
-	font-size: 20px;
-	/* line-height 后而可以跟不同的参数，如果是数字，就是当前字体大小乘上数字 */
-	line-height: 1;
-	letter-spacing: 1px;
-	margin-top: 20px;
+nav ul {
+	list-style: none;
 	text-align: center;
+	padding: 0;
+}
+
+nav ul li {
+	display: inline-block;
+	margin-left: 15px;
+	margin-right: 15px;
 }
 
 a.tests {
 	/* float: left; */
 	font-size: 25px;
 	color: white;
+	text-align: center;
+}
+
+p {
+	font-size: 20px;
+	/* line-height 后而可以跟不同的参数，如果是数字，就是当前字体大小乘上数字 */
+	line-height: 1;
+	letter-spacing: 1px;
+	margin-top: 20px;
 	text-align: center;
 }
 
