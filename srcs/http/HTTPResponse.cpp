@@ -156,7 +156,6 @@ std::map<std::string, std::string> HTTPResponse::init_content_type()
 			type["javascript"] = "text/javascript";
 			type[""] = "text/plain";
 			type["txt"] = "text/plain";
-			type["php"] = "text/html";
 			return type;
 }
 

@@ -2,7 +2,6 @@
 
 void	HTTPRequest::set_upload_files(std::string const &request)
 {
-	// todo : put request into _upload_files
 	std::string line;
 	std::stringstream ss(request);
 	
@@ -33,14 +32,10 @@ void	HTTPRequest::set_upload_files(std::string const &request)
 				break ;
 			if (!getline(ss, line, '\n'))
 				break ;
-			
-			// std::cerr << "filename : " << filename <<"\n";
-			// last file finished
 		}
 		else
 			file.add_content(line);
 	}
-	// std::cerr << _upload_files.size() << "\n";
 }
 
 HTTPRequest::HTTPRequest(ServerInfo const &server, std::string const &request):_behavior(none),_file_uri(""), _second_file_uri(""), _content_length(""), _content_type(""), _boundary(""), _accept("") // throw status_code if error
@@ -64,7 +59,6 @@ HTTPRequest::HTTPRequest(ServerInfo const &server, std::string const &request):_
 		{
 			if (tmp == "Content-Length:")
 			{
-			// std::cerr << "IN1\n";
 				if (_content_length == "")
 					ss >> _content_length;
 				else
@@ -72,8 +66,6 @@ HTTPRequest::HTTPRequest(ServerInfo const &server, std::string const &request):_
 			}
 			else if (tmp == "Content-Type:")
 			{
-	// std::cerr << "IN2\n";
-
 				if (_content_type == "")
 				{
 					ss >> _content_type;
@@ -88,8 +80,6 @@ HTTPRequest::HTTPRequest(ServerInfo const &server, std::string const &request):_
 			}
 			else if (tmp == "Accept:")
 			{
-	// std::cerr << "IN3\n";
-
 				if (_accept == "")
 					ss >> _accept;
 				else
@@ -98,8 +88,7 @@ HTTPRequest::HTTPRequest(ServerInfo const &server, std::string const &request):_
 			else if (_boundary != "" && (tmp == "--" + _boundary || tmp == "--" + _boundary + "--" ))
 				break ;
 		}
-		
-		// check length
+
 		if (_content_length == "" || !is_number(_content_length))
 			throw(LengthRequired);
 		
@@ -107,10 +96,7 @@ HTTPRequest::HTTPRequest(ServerInfo const &server, std::string const &request):_
 		if (bigger_than(_content_length, ft::to_string(static_cast<long long>(server.get_client_body_size()) * static_cast<long long>(MB))))
 			throw(PayloadTooLarge);
 
-		
-		// todo : check type, accept, boundary
-
-		if (_boundary == "" || _content_type == "") //|| _accept == "")
+		if (_boundary == "" || _content_type == "")
 			throw(BadRequest);
 
 		set_upload_files(request);
@@ -125,8 +111,6 @@ static bool find_file(HTTPRequest &request, Location const &location, std::strin
 	if (path.size() < uri.size() || path.substr(0, uri.size()) != uri ||
 	(path.size() > uri.size() && path[uri.size()] != '/' && path[uri.size() - 1] != '/') )
 		return false;
-
-	// redirect
 
 	if (location.get_redirect() != "")
 	{
@@ -176,11 +160,10 @@ static bool find_file(HTTPRequest &request, Location const &location, std::strin
 	std::string	root = location.get_root();
 	if (root == "" || !directory_exist(root))
 		return false;
-	
 
-	if (path.size() <= uri.size() + 1 && method == "GET") // path == location_uri or path == location_uri + 1
+
+	if (path.size() <= uri.size() + 1 && method == "GET")
 	{
-		// index or autoindex
 		if (location.get_autoindex())
 		{
 			request.set_file_uri(root);
@@ -234,7 +217,6 @@ void	HTTPRequest::check_request(ServerInfo const &server)
 	for (it = server.get_location().begin() ; it != server.get_location().end() ; ++it)
 		if (find_file(*this, *it, _path, _method))
 		{
-			// std::cerr << it->get_uri() << std::endl << std::endl;
 			break ;
 		}
 
@@ -242,8 +224,6 @@ void	HTTPRequest::check_request(ServerInfo const &server)
 	{
 		throw(NotFound);
 	}
-	
-	// check method
 	
 	std::vector<std::string> const &allow_method = it->get_allow_method();
 	for (size_t i = 0 ; i < allow_method.size() ; ++i)
