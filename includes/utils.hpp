@@ -12,6 +12,7 @@ std::string get_file_type(std::string const &file);
 std::string get_file_content(std::string const &content);
 std::string file_or_directory(std::string const &uri);
 void	change_file_name(std::string &);
+void	delete_file(std::string const &);
 
 namespace  ft
 {

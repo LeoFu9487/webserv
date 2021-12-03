@@ -186,7 +186,7 @@ static bool find_file(HTTPRequest &request, Location const &location, std::strin
 		}
 	}
 	
-	if (method == "GET")
+	if (method == "GET" || method == "DELETE")
 	{
 		if (uri[uri.size() - 1] == '/' && root[root.size() - 1] != '/')
 		root += "/";
