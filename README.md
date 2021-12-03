@@ -17,6 +17,8 @@ todo :
 8. two the same uri for different locations in the same server
 9. need to test find_file in HTTPRequest.cpp
 10. Default index page for server
+11. Check Error 414 ?
+12. upload a big file can't finish reading at once
 
 ## reference
 

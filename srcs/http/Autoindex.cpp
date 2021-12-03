@@ -1,6 +1,6 @@
 #include "webserv.hpp"
 
-Autoindex::Autoindex(std::string const &root)
+Autoindex::Autoindex(std::string uri, std::string const &root)
 {
 	DIR *dir;
     struct dirent *ent;
@@ -8,11 +8,15 @@ Autoindex::Autoindex(std::string const &root)
 	if ((dir = opendir(root.c_str())) != NULL)
     {
         while ((ent = readdir(dir)) != NULL)
-			files.push_back(std::string(ent->d_name));
+			if (std::string(ent->d_name) != "." && std::string(ent->d_name) != "..")
+				files.push_back(std::string(ent->d_name));
         closedir(dir);
     }
     else
         throw(NotFound);
+
+	if (uri[uri.size() - 1] != '/')
+		uri += "/";
 	// std::vector<std::pair<std::string, std::string> > files_and_types;
     // if ((dir = opendir(root.c_str())) != NULL)
     // {
@@ -29,11 +33,11 @@ Autoindex::Autoindex(std::string const &root)
 	_html += "<title>Autoindex</title>\r\n";
 	_html += "</head>\r\n";
 	_html += "<body>\r\n";
-	_html += "<h1> Current Direcotry : " + root + "</h1>\r\n";
+	_html += "<h1> Current Direcotry : " + uri + "</h1>\r\n";
 	_html += "Files : \r\n<ul>";
 	for (std::vector<std::string>::iterator it = files.begin() ; it != files.end() ; ++it)
 	{
-		_html += "<li><a href=\"" + *it + "\"> " + *it + "</a></li>\r\n";
+		_html += "<li><a href=\"" + uri + *it + "\"> " + *it + "</a></li>\r\n";
 	}
 	_html += "</ul></body></html>\r\n";
 }

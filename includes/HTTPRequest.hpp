@@ -5,12 +5,17 @@
 source : https://www.ibm.com/docs/en/cics-ts/5.2?topic=protocol-http-requests
 */
 
+class UploadFile;
+
 typedef enum
 {
 	none,
 	redirect,
 	autoindex,
-	existed_file
+	existed_file,
+	post_autoindex,
+	post_existed_file,
+	post_no_get
 }Location_behavior;
 
 class HTTPRequest
@@ -20,6 +25,7 @@ private:
 	Location_behavior	_behavior;
 
 	std::string	_file_uri;
+	std::string _second_file_uri;
 
 //	Request line
 	std::string	_method;
@@ -32,7 +38,7 @@ private:
 	std::string _content_type; // if not found throw
 	std::string _boundary;
 	std::string _accept;
-	std::vector<std::string> _content;
+	std::vector<UploadFile> _upload_files;
 
 
 	// std::vector<std::string> _query_string;
@@ -43,15 +49,17 @@ private:
 
 
 public:
-	HTTPRequest(std::string const &); 
+	HTTPRequest(ServerInfo const &, std::string const &); 
 	// method, path, 
 	void	check_request(ServerInfo const &server);
 	
 	void	set_file_uri(std::string const &file_uri);
+	void	set_second_file_uri(std::string const &);
 	void	set_behavior(Location_behavior behavior);
-	
+	void	set_upload_files(std::string const &request);
 	
 	std::string const &get_file_uri() const;
+	std::string const &get_second_file_uri() const;
 	Location_behavior	get_behavior() const;
 	std::string const &get_method() const;
 	std::string const &get_HTTP_versoin() const;
@@ -59,7 +67,9 @@ public:
 	std::string const &get_content_type() const;
 	std::string const &get_boundary() const;
 	std::string const &get_accept() const;
-	std::vector<std::string> const &get_content() const;
+	std::vector<UploadFile> const &get_upload_files() const;
+	std::string const &get_path() const;
+
 
 	void	print() const;
 };

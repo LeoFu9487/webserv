@@ -7,6 +7,6 @@ class Autoindex
 		std::string _html;
 
 	public:
-		Autoindex(std::string const &root);
+		Autoindex(std::string uri, std::string const &root);
 		std::string const &get_html() const;
 };

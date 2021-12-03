@@ -77,11 +77,11 @@ class HTTPResponse
 	private:
 		static std::map<int, std::string> init_code_status();
 		static std::map<std::string, std::string> init_content_type();
-		static std::map<std::string, std::string> _content_type;
 		static std::string get_default_error_page(status_code error_code);
 		std::string	_HTTP_version;
 		status_code	_status_code;
 		std::string _file_uri;
+		std::string _second_file_uri;
 		// std::string _date;
 		// std::string _server;
 		
@@ -90,9 +90,10 @@ class HTTPResponse
 
 	public:
 		static std::map<int, std::string> _status_line;
+		static std::map<std::string, std::string> _content_type;
 		static void	send_error_page(int fd, std::string const &error_pages_root, status_code error_code);
 
-		HTTPResponse(std::string const &HTTP_version, std::string const &method, std::string const &file_uri, Location_behavior behavior, status_code status = Undefined);
+		HTTPResponse(std::string const &HTTP_version, std::string const &method, std::string const &file_uri, std::string const &second_file_uri, std::string const &path, Location_behavior behavior, std::vector<UploadFile> const &, status_code status = Undefined);
 
 		void	set_HTTP_version(std::string const &);
 		void	set_status_code(status_code);
@@ -101,6 +102,7 @@ class HTTPResponse
 		std::string const	&get_HTTP_version() const;
 		status_code			get_status_code() const;
 		std::string const	&get_file_uri() const;
+		std::string const	&get_second_file_uri() const;
 		std::string const	&get_msg() const;
 };
 
