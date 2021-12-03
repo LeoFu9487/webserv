@@ -19,26 +19,14 @@
 	</nav>
 
 	<h2>Click on the "Choose File" button to upload a file:</h2>
+	<form name="upload" enctype="multipart/form-data" method="post" action="/post">
+		<input type="file" name="file1"><br>
+		<input type="file" name="file2"><br>
+		<input type="file" name="file3"><br>
+		<input type="file" name="file4"><br>
+		<input type="file" name="file5"><br>
+		<input type="submit" value="upload">
+	</form>
 
-	<form action="/action_page.php">
-	  <input type="file" id="myFile" name="filename">
-	  <input type="submit">
-	</form>
-	<form action="/action_page.php">
-		<input type="file" id="myFile" name="filename">
-		<input type="submit">
-	</form>
-	<form action="/action_page.php">
-		<input type="file" id="myFile" name="filename">
-		<input type="submit">
-	</form>
-	<form action="/action_page.php">
-		<input type="file" id="myFile" name="filename">
-		<input type="submit">
-	</form>
-	<form action="/action_page.php">
-		<input type="file" id="myFile" name="filename">
-		<input type="submit">
-	</form>
 </body>
 </html>
