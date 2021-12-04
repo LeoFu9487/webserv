@@ -156,7 +156,6 @@ std::map<std::string, std::string> HTTPResponse::init_content_type()
 			type["javascript"] = "text/javascript";
 			type[""] = "text/plain";
 			type["txt"] = "text/plain";
-			type["php"] = "text/html";
 			return type;
 }
 
@@ -231,7 +230,14 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 		}
 		else if (method == "DELETE")
 		{
-			// todo
+			if (directory_exist(file_uri))
+				throw(Forbidden);
+			if (!uri_exist(file_uri))
+				throw(NotFound);
+			delete_file(file_uri);
+			set_status_code(NoContent);
+			_msg = "HTTP/" + get_HTTP_version() + " " + ft::to_string(get_status_code()) + " " + _status_line[get_status_code()] + "\r\n";
+			_msg += "Content-Type: text/html\r\nContent-Length:0\r\n\n";
 		}
 		else
 			throw(MethodNotAllowed);
@@ -258,7 +264,7 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 	}
 	else
 	{
-		// todo : CGI
+		print_log("WTF???");
 	}
 }
 

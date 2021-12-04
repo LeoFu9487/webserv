@@ -52,6 +52,10 @@ http status code :
 
 https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
+delete method :
+
+https://reqbin.com/Article/HttpDelete
+
 unread :
 
 https://www.notion.so/etelcode/Documentation-Webserv-320727979ffd4176a7dd5ba41aaadf46 - french

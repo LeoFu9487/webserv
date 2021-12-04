@@ -163,6 +163,14 @@ void	change_file_name(std::string &file_name)
     }
 }
 
+void	delete_file(std::string const &file_name)
+{
+    std::remove(file_name.c_str());
+
+    if (uri_exist(file_name))
+        throw(Conflict);
+}
+
 std::string ft::to_string(int n)
 {
     std::ostringstream convert;
