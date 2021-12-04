@@ -33,6 +33,10 @@ img {
 	margin-right: 300px
 }
 
+#middle{
+	float: middle;
+}
+
 h1 {
 	margin: 0; 	/* to remove the top gap */
 	font-size: 50px;
