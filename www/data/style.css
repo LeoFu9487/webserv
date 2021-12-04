@@ -33,10 +33,6 @@ img {
 	margin-right: 300px
 }
 
-#middle{
-	float: middle;
-}
-
 h1 {
 	margin: 0; 	/* to remove the top gap */
 	font-size: 50px;
@@ -98,3 +94,16 @@ a.intra {
 form {
 	text-align: center;
 }
+
+button {
+	background-color: #555555;
+	border: none;
+	color: white;
+	padding: 15px 25px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	letter-spacing: 1px;
+	margin-top: 50px;
+  }

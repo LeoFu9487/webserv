@@ -10,7 +10,7 @@
 	<script>
 		function to_delete() {
 			$.ajax ({
-				url: 'file_to_delete.html',
+				url: 'delete/file_to_delete.html',
 				type: 'DELETE',
 				success: function() {
 					alert("Deleted succesfully");
@@ -20,7 +20,6 @@
 				}
 			});
 		}
-
 	</script>
 	<title>WEBSERV</title>
 </head>
@@ -32,11 +31,14 @@
 		<ul>
 			<li><a href="index.html" class="tests">HOME</a></li>
 			<li><a href="test_post.html" class="tests">POST</a></li>
+			<li><a href="test_delete.html" class="tests">DELETE</a></li>
 			<li><a href="test_cgi.html" class="tests">CGI</a></li>
 		</ul>
 	</nav>
 
-	<button onclick="to_delete()">Delete</button><br>
+	<div style="text-align:center;">
+	<button onclick="to_delete()">Delete</button>
+	</div>
 
 </body>
 </html>
