@@ -66,6 +66,12 @@ bool	is_number(std::string const &num)
     return true;
 }
 
+
+bool	is_executable(std::string const &file_name)
+{
+    return access(file_name.c_str(), X_OK) == 0;
+}
+
 std::string get_file_type(std::string const &file_uri)
 {
     size_t dot = file_uri.find_last_of(".");

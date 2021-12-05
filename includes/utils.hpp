@@ -8,6 +8,7 @@ bool	uri_exist(std::string const &file);
 bool	file_exist(std::string const &file);
 bool	bigger_than(std::string const &a, std::string const &b);
 bool	is_number(std::string const &);
+bool	is_executable(std::string const &);
 std::string get_file_type(std::string const &file);
 std::string get_file_content(std::string const &content);
 std::string file_or_directory(std::string const &uri);

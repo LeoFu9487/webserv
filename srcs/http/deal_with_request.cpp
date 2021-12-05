@@ -7,10 +7,19 @@ void	deal_with_request(std::map<int, ClientInfo>::iterator it)
 		// std::cout << it->second.get_request() << std::endl;
 		HTTPRequest	request(it->second.get_server(), it->second.get_request());
 		request.check_request(it->second.get_server());
+		
+		Location const &location = request.get_location();
 
-		HTTPResponse response(request.get_HTTP_versoin(), request.get_method(), request.get_file_uri(), request.get_second_file_uri(), request.get_path(), request.get_behavior(), request.get_upload_files());
-		write(it->first, response.get_msg().c_str(), response.get_msg().size());
-		print_log("Respond with HTTP status : " + ft::to_string(response.get_status_code()) + " " + HTTPResponse::_status_line[response.get_status_code()]);
+		if (Cgi::is_cgi(location.get_cgi(), request.get_file_uri()))
+		{
+			/* cgi */
+		}
+		else
+		{
+			HTTPResponse response(request.get_HTTP_versoin(), request.get_method(), request.get_file_uri(), request.get_second_file_uri(), request.get_path(), request.get_behavior(), request.get_upload_files());
+			write(it->first, response.get_msg().c_str(), response.get_msg().size());
+			print_log("Respond with HTTP status : " + ft::to_string(response.get_status_code()) + " " + HTTPResponse::_status_line[response.get_status_code()]);
+		}
 	}
 	catch(status_code error_code)
 	{

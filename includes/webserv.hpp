@@ -41,3 +41,4 @@
 #include "HTTPResponse.hpp"
 #include "Autoindex.hpp"
 #include "UploadFile.hpp"
+#include "Cgi.hpp"

@@ -178,8 +178,7 @@ HTTPResponse::HTTPResponse(std::string const &HTTP_version, std::string const &m
 	if (behavior == post_autoindex || behavior == post_existed_file || behavior == post_no_get)
 	{
 		// source : https://reqbin.com/Article/HttpPost#:~:text=POST%20is%20an%20HTTP%20method,and%20images%20to%20the%20server.
-		// Found, Not FOund, Unprocessable Entity
-		// if (file_uri[file_uri.size() - 1] != '/')
+
 		for (size_t i = 0 ; i < upload_files.size() ; ++i)
 		{
 			std::string file_name(file_uri[file_uri.size() - 1] == '/' ? file_uri + upload_files[i].get_file_name() : file_uri + "/" + upload_files[i].get_file_name());

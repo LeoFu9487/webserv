@@ -7,6 +7,8 @@ source : https://www.ibm.com/docs/en/cics-ts/5.2?topic=protocol-http-requests
 
 class UploadFile;
 
+class Location;
+
 typedef enum
 {
 	none,
@@ -30,6 +32,7 @@ private:
 //	Request line
 	std::string	_method;
 	std::string	_path;
+	std::string _query_string;
 	std::string	_HTTP_version;
 	
 	// if _method == "POST"
@@ -39,6 +42,7 @@ private:
 	std::string _boundary;
 	std::string _accept;
 	std::vector<UploadFile> _upload_files;
+	Location const			*_location;
 
 
 	// std::vector<std::string> _query_string;
@@ -57,6 +61,7 @@ public:
 	void	set_second_file_uri(std::string const &);
 	void	set_behavior(Location_behavior behavior);
 	void	set_upload_files(std::string const &request);
+	void	set_query_string(std::string const &request);
 	
 	std::string const &get_file_uri() const;
 	std::string const &get_second_file_uri() const;
@@ -69,6 +74,7 @@ public:
 	std::string const &get_accept() const;
 	std::vector<UploadFile> const &get_upload_files() const;
 	std::string const &get_path() const;
+	Location const &get_location() const;
 
 
 	void	print() const;
