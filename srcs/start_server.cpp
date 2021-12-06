@@ -29,7 +29,10 @@ void	start_server(std::map<int, ServerInfo *> &fd_of_servers)
 				if (read_request(it) <= 0) // no request sent
 					delete_client_from_epoll(fd_of_clients, epoll_fd, eventlist[i].data.fd);
 				else
+				{
 					deal_with_request(it);
+					delete_client_from_epoll(fd_of_clients, epoll_fd, eventlist[i].data.fd);
+				}
 			}
 			else // Neet to deal with Write Event ?
 			{

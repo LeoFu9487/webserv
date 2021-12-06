@@ -59,8 +59,8 @@ int	read_request(std::map<int, ClientInfo>::iterator it)
 
 	while (1)
 	{
-		char	buf[RCV_BUFFER_SIZE];
-		len = recv(it->first, buf, RCV_BUFFER_SIZE - 1, 0);
+		char	buf[BUFFER_SIZE];
+		len = recv(it->first, buf, BUFFER_SIZE - 1, 0);
 		if (len <= 0)
 			break ;
 		ret += len;

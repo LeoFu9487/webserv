@@ -66,6 +66,27 @@ bool	is_number(std::string const &num)
     return true;
 }
 
+int		string_to_int(std::string const &str)
+{
+    int ans = 0;
+    for (size_t i = 0 ; i < str.size() ; ++i)
+    {
+        ans = 10 * ans + str[i] - '0';
+    }
+    return ans;
+}
+
+
+bool	is_executable(std::string const &file_name)
+{
+    return access(file_name.c_str(), X_OK) == 0;
+}
+
+bool	is_readable(std::string const &file_name)
+{
+    return access(file_name.c_str(), R_OK) == 0;
+}
+
 std::string get_file_type(std::string const &file_uri)
 {
     size_t dot = file_uri.find_last_of(".");

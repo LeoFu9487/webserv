@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kqueue_operation.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: xli <xli@student.42lyon.fr>                +#+  +:+       +#+        */
+/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 11:29:54 by xli               #+#    #+#             */
-/*   Updated: 2021/11/29 14:25:33 by xli              ###   ########lyon.fr   */
+/*   Updated: 2021/12/06 15:31:58 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ int	read_request(std::map<int, ClientInfo>::iterator it)
 
 	while (1)
 	{
-		char	buf[RCV_BUFFER_SIZE];
-		len = recv(it->first, buf, RCV_BUFFER_SIZE - 1, 0);
+		char	buf[BUFFER_SIZE];
+		len = recv(it->first, buf, BUFFER_SIZE - 1, 0);
 		if (len <= 0)
 			break ;
 		ret += len;

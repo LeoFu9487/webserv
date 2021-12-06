@@ -9,6 +9,7 @@
 #include <fcntl.h> // fcntl
 #include <unistd.h> // read, write, close
 #include <dirent.h>
+#include <sys/wait.h>
 
 #ifdef __linux__
 	#include <sys/epoll.h> // epoll
@@ -41,3 +42,4 @@
 #include "HTTPResponse.hpp"
 #include "Autoindex.hpp"
 #include "UploadFile.hpp"
+#include "Cgi.hpp"
