@@ -210,7 +210,7 @@ Cgi::Cgi(Location const &location, HTTPRequest const &request):_msg(""),_status_
 			}
 		}
 
-		_msg = "HTTP/1.1 " + ft::to_string(_status_code) + " " + HTTPResponse::_status_line[_status_code] + "\r\n" + body;
+		_msg = "HTTP/1.1 " + ft::to_string(_status_code) + " " + HTTPResponse::_status_line[_status_code] + "\r\n\n" + body;
 	}
 }
 
