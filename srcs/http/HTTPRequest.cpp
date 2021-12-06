@@ -54,6 +54,8 @@ HTTPRequest::HTTPRequest(ServerInfo const &server, std::string const &request):_
 		throw(BadRequest);
 	if (!(ss >> _path))
 		throw(BadRequest);
+	if (_method == "GET" && _path.size() > GET_REQUEST_URI_LIMIT)
+		throw(URITooLong);
 	if (!(ss >> _HTTP_version))
 		throw(BadRequest);
 	
@@ -140,8 +142,19 @@ static bool find_file(HTTPRequest &request, Location const &location, std::strin
 	if (method == "POST")
 	{
 		std::string upload_path = location.get_upload_path();
-		if (upload_path == "" || !directory_exist(upload_path))
+		if (upload_path == "" || !uri_exist(upload_path))
 			return false;
+		if (!directory_exist(upload_path))
+		{
+			// cgi
+			request.set_behavior(cgi);
+			std::string root = location.get_root();
+			if (uri[uri.size() - 1] == '/' && root[root.size() - 1] != '/')
+				root += "/";
+			path.replace(0, uri.size(), root);
+			request.set_file_uri(path);
+			return true;
+		}
 		if (uri[uri.size() - 1] == '/' && upload_path[upload_path.size() - 1] != '/')
 			upload_path += "/";
 		path.replace(0, uri.size(), upload_path);
@@ -328,6 +341,11 @@ Location const &HTTPRequest::get_location() const
 	if (_location == NULL)
 		throw(NotFound);
 	return *_location;
+}
+
+std::string const &HTTPRequest::get_query_string() const
+{
+	return _query_string;
 }
 
 void	HTTPRequest::print() const

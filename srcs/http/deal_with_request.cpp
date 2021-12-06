@@ -10,9 +10,11 @@ void	deal_with_request(std::map<int, ClientInfo>::iterator it)
 		
 		Location const &location = request.get_location();
 
-		if (Cgi::is_cgi(location.get_cgi(), request.get_file_uri()))
+		if (request.get_behavior() == cgi || Cgi::is_cgi(location.get_cgi(), request.get_file_uri()))
 		{
-			/* cgi */
+			Cgi cgi(location, request);
+			write(it->first, cgi.get_msg().c_str(), cgi.get_msg().size());
+			print_log("Respond with HTTP status : " + ft::to_string(cgi.get_status_code()) + " " + HTTPResponse::_status_line[cgi.get_status_code()]);
 		}
 		else
 		{

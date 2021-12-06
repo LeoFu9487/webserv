@@ -17,7 +17,8 @@ typedef enum
 	existed_file,
 	post_autoindex,
 	post_existed_file,
-	post_no_get
+	post_no_get,
+	cgi
 }Location_behavior;
 
 class HTTPRequest
@@ -45,7 +46,6 @@ private:
 	Location const			*_location;
 
 
-	// std::vector<std::string> _query_string;
 	// https://stackoverflow.com/questions/39266970/what-is-the-difference-between-uri-parameters-and-query-strings
 
 
@@ -72,6 +72,7 @@ public:
 	std::string const &get_content_type() const;
 	std::string const &get_boundary() const;
 	std::string const &get_accept() const;
+	std::string const &get_query_string() const;
 	std::vector<UploadFile> const &get_upload_files() const;
 	std::string const &get_path() const;
 	Location const &get_location() const;
