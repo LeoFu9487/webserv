@@ -20,6 +20,7 @@ todo :
 11. Check Error 414 ?
 12. upload a big file can't finish reading at once
 13. CGI TLE
+14. Do I need to delete_client_from_epoll after dealing with event ?
 
 ## reference
 
