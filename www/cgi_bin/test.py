@@ -1,13 +1,12 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
-import cgi
+import cgi, cgibt
 
 form = cgi.FieldStorage()
 
-name  = form.getvalue('name')
+name = form.getvalue('name')
 
-print 'HTTP/1.1 200 OK'
-print 'Content-Type: text/html\r\n\'
+print 'Content-Type: text/html\r\n'
 print '<html>'
 print '<head>'
 print '<title>Webserv</title>'
