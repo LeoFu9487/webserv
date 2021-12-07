@@ -141,20 +141,22 @@ static bool find_file(HTTPRequest &request, Location const &location, std::strin
 
 	if (method == "POST")
 	{
-		std::string upload_path = location.get_upload_path();
-		if (upload_path == "" || !uri_exist(upload_path))
-			return false;
-		if (!directory_exist(upload_path))
+		if (Cgi::is_cgi(location.get_cgi(), path))
 		{
 			// cgi
-			request.set_behavior(cgi);
 			std::string root = location.get_root();
 			if (uri[uri.size() - 1] == '/' && root[root.size() - 1] != '/')
 				root += "/";
 			path.replace(0, uri.size(), root);
+			if (!uri_exist(path) || directory_exist(path))
+				return false;
 			request.set_file_uri(path);
+			request.set_behavior(cgi);
 			return true;
 		}
+		std::string upload_path = location.get_upload_path();
+		if (upload_path == "" || !directory_exist(upload_path))
+			return false;
 		if (uri[uri.size() - 1] == '/' && upload_path[upload_path.size() - 1] != '/')
 			upload_path += "/";
 		path.replace(0, uri.size(), upload_path);
