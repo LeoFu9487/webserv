@@ -23,18 +23,19 @@ img {
 	float: left;
 	/*width: 600px;*/
 	margin-top: 10px;
-	margin-left: 300px
+	margin-left: 800px
 }
 
 #right{
 	float: right;
 	/*width: 600px;*/
 	margin-top: 10px;
-	margin-right: 300px
+	margin-right: 800px
 }
 
 h1 {
 	margin: 0; 	/* to remove the top gap */
+	margin-top: 80px;
 	font-size: 50px;
 	letter-spacing: 3px;
 	text-align: center;
@@ -42,7 +43,7 @@ h1 {
 
 h2 {
 	font-size: 25px;
-	margin-top: 90px;
+	margin-top: 180px;
 	letter-spacing: 2px;
 	text-align: center;
 }
@@ -96,10 +97,8 @@ form.post {
 }
 
 form.cgi {
-	text-align: left;
 	line-height: 2;
-	margin-top: 50px;
-	margin-left: 280px;
+	text-align: center;
 }
 
 button {
