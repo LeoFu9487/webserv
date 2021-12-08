@@ -51,7 +51,7 @@ void	accept_new_client(int epoll_fd, int server_fd, std::map<int, ClientInfo> &f
 	fd_of_clients.insert(std::make_pair(client_fd, ClientInfo((*(fd_of_servers[server_fd])))));
 }
 
-int	read_request(std::map<int, ClientInfo>::iterator it)
+int	read_request(std::map<int, ClientInfo>::iterator &it)
 {
 	int	ret = 0;
 	int	len;
@@ -68,7 +68,7 @@ int	read_request(std::map<int, ClientInfo>::iterator it)
 		str += buf;
 	}
 	if (ret > 0)
-		it->second.set_request(str);
+		it->second.add_request(str);
 	return ret;
 }
 

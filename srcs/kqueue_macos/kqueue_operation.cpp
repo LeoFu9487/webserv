@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kqueue_operation.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfu <marvin@42.fr>                         +#+  +:+       +#+        */
+/*   By: yfu <yfu@student.42lyon.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 11:29:54 by xli               #+#    #+#             */
-/*   Updated: 2021/12/06 15:31:58 by yfu              ###   ########lyon.fr   */
+/*   Updated: 2021/12/08 16:48:34 by yfu              ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,18 @@ void	add_read_event_in_kqueue(int kqueue_fd, int socket_fd)
 		throw(FailToControlKqueue());
 }
 
+void	add_write_event_in_kqueue(int kqueue_fd, std::map<int, ClientInfo>::iterator & it)
+{
+	struct kevent	event;
+	// it->first = fd, it->second = client
+
+	std::memset(&event, 0, sizeof(event));
+	EV_SET(&event, it->first, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, 0);
+	if (kevent(kqueue_fd, &event, 1, NULL, 0, NULL) == -1)
+		throw(FailToControlKqueue());
+	it->second.set_ready();
+}
+
 void	delete_client_from_kqueue(std::map<int, ClientInfo> &fd_map, int target_fd)
 {
 	print_log("One client disconnected successfully");
@@ -57,7 +69,7 @@ void	accept_new_client(int kqueue_fd, int server_fd, std::map<int, ClientInfo> &
 	fd_of_clients.insert(std::make_pair(client_fd, ClientInfo((*(fd_of_servers[server_fd])))));
 }
 
-int	read_request(std::map<int, ClientInfo>::iterator it)
+int	read_request(std::map<int, ClientInfo>::iterator &it)
 {
 	int	ret = 0;
 	int	len;
@@ -74,7 +86,7 @@ int	read_request(std::map<int, ClientInfo>::iterator it)
 		str += buf;
 	}
 	if (ret > 0)
-		it->second.set_request(str);
+		it->second.add_request(str);
 	return ret;
 }
 

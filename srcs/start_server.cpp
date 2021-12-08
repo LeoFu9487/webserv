@@ -70,10 +70,21 @@ void	start_server(std::map<int, ServerInfo *> &fd_of_servers)
 					delete_client_from_kqueue(fd_of_clients, eventlist[i].ident);
 				else
 				{
-					deal_with_request(it);
-					delete_client_from_kqueue(fd_of_clients, eventlist[i].ident);
+					// check if request is complete
+					// if is complete : construct response, put in write event
+					if (it->second.request_is_complete())
+					{
+						deal_with_request(it);
+						delete_client_from_kqueue(fd_of_clients, eventlist[i].ident);
+					}
 				}
 			}
+			// else if (eventlist[i].filter == EVFILT_WRITE)
+			// {
+
+			// 	// send response, if not complete : put in write event
+			// 	// else delete client (maybe print_log)
+			// }
 			else
 				delete_client_from_kqueue(fd_of_clients, eventlist[i].ident);
 		}
