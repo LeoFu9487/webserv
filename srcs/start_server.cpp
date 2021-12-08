@@ -69,7 +69,10 @@ void	start_server(std::map<int, ServerInfo *> &fd_of_servers)
 				if (read_request(it) <= 0)
 					delete_client_from_kqueue(fd_of_clients, eventlist[i].ident);
 				else
+				{
 					deal_with_request(it);
+					delete_client_from_kqueue(fd_of_clients, eventlist[i].ident);
+				}
 			}
 			else
 				delete_client_from_kqueue(fd_of_clients, eventlist[i].ident);
